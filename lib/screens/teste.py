@@ -1,6 +1,10 @@
 import os
+import sys
+import serial
 
-def funcao():
+ser = serial.Serial('COM6', 115200)
+
+def funcao1():
     caminho_pasta = os.path.dirname(__file__)
     nome_arquivo = "arquivoTeste.txt"
     conteudo = "funcionando"
@@ -15,4 +19,25 @@ def funcao():
     except Exception as e:
         print(f"Erro ao criar o arquivo: {e}")
 
-funcao()
+def escrever(texto):
+    texto = bytes(texto, encoding='utf8')
+    ser.write(texto)
+
+def guilhotina():
+    ser.write(b'\x1b\x77')
+
+def main():
+    if len(sys.argv)<2:
+        print("forneça o nome da funçao como argumento.")
+        return 
+    funcao = sys.argv[1]
+    if funcao == 'funcao1':
+        print(funcao1())
+    elif funcao == 'funcao2':
+        guilhotina()
+        print('ok')
+    else:
+        print(f"funcao {funcao} nao reconhecida.")
+
+if __name__ == "__main__":
+    main()
