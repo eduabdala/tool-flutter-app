@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'screens/home.dart';
+import 'package:perto_printer/screens/produtos.dart';
+
 
 void main() {
-  runApp(const MyApp());
-
+  runApp(const Produtos());
   }
+
 

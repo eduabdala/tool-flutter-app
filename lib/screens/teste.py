@@ -1,10 +1,11 @@
 import os
 import sys
+import argparse
 import serial
 
 ser = serial.Serial('COM6', 115200)
 
-def funcao1():
+def funcaoTeste():
     caminho_pasta = os.path.dirname(__file__)
     nome_arquivo = "arquivoTeste.txt"
     conteudo = "funcionando"
@@ -20,24 +21,34 @@ def funcao1():
         print(f"Erro ao criar o arquivo: {e}")
 
 def escrever(texto):
+    print(texto)
     texto = bytes(texto, encoding='utf8')
     ser.write(texto)
 
 def guilhotina():
     ser.write(b'\x1b\x77')
 
-def main():
+def main(arg1, arg2):
     if len(sys.argv)<2:
         print("forneça o nome da funçao como argumento.")
         return 
-    funcao = sys.argv[1]
+    funcao = arg1
+    texto = arg2
     if funcao == 'funcao1':
-        print(funcao1())
+        print(escrever(texto))
     elif funcao == 'funcao2':
-        guilhotina()
+        guilhotina() 
         print('ok')
     else:
         print(f"funcao {funcao} nao reconhecida.")
 
+def teste(texto):
+    print(texto)
+
+
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Chamar minha funcao com argumentos")
+    parser.add_argument("arg1", type=str, help="Primeiro argumento")
+    parser.add_argument("arg2", type=str, help="Segundo argumento")
+    args = parser.parse_args()
+    main(args.arg1, args.arg2)

@@ -1,5 +1,6 @@
 import serial
 import sys
+import argparse
 from robot.api.deco import keyword
 from robot.api import logger
 ser = serial.Serial('COM6', 115200)
@@ -405,18 +406,26 @@ def cmd_define_avanco_papel(xpto):
     cmd = b'\x1b\x4a' + n
     ser.write(cmd)
 
-def main():
+
+def main(arg1, arg2):
     if len(sys.argv)<2:
         print("forneça o nome da funçao como argumento.")
         return 
-    funcao = sys.argv[1]
+    funcao = arg1
+    texto = arg2
     if funcao == 'funcao1':
-        print(pipeline_cmd_digitar('hora de almoçar 13:07 :)'))
+        print(pipeline_cmd_digitar(arg2))
     elif funcao == 'funcao2':
         pipeline_cmd_guilhotina()
         print('ok')
     else:
         print(f"funcao {funcao} nao reconhecida.")
 
+
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Chamar minha funcao com argumentos")
+    parser.add_argument("arg1", type=str, help="Primeiro argumento")
+    parser.add_argument("arg2", type=str, help="Segundo argumento")
+    args = parser.parse_args()
+    main(args.arg1, args.arg2)
+
