@@ -414,7 +414,7 @@ def main(arg1, arg2):
     funcao = arg1
     texto = arg2
     if funcao == 'funcao1':
-        print(pipeline_cmd_digitar(texto))
+        print(pipeline_cmd_digitar(arg2))
     elif funcao == 'funcao2':
         pipeline_cmd_guilhotina()
         print('ok')

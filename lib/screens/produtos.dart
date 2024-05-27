@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:perto_printer/screens/protocoloPrinter.dart';
+import 'package:perto_printer/screens/protocolo_printer.dart';
 
 
 class Produtos extends StatelessWidget{
@@ -10,36 +8,52 @@ class Produtos extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return MaterialApp(
-      title: 'teste',
+      title: 'produtos',
       theme: ThemeData(
         primarySwatch: Colors.blue
       ),
-      home:FirstScreen(),
+      home:const FirstScreen(),
     );
   }
 }
 
 class FirstScreen extends StatelessWidget{
+  const FirstScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.white,
           title: const Text("Produtos"),
         ),
         body: Center(
-          child: ElevatedButton(
-            onPressed:(){
-            Navigator.push(
-              context, MaterialPageRoute(builder: (context) 
-              => const Protocoloprinter())
-              );
-            }, 
-          child: const Text('Impressora de Recibos - ATM'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                width: 200,
+                height: 50,
+                child:ElevatedButton(
+                  onPressed:(){
+                    Navigator.push(
+                      context, MaterialPageRoute(builder: (context) 
+                        => const ProtocoloPrinter())
+                          );
+                        }, 
+                  style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white, backgroundColor: Colors.blue
+                  ),
+                  child: const Text('Impressora de Recibos - ATM'),
+                ),
+              ),
+            ],
+            ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
   
