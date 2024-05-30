@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:perto_printer/screens/protocolo_printer.dart';
+import 'package:path/path.dart' as p;
 //import 'package:flutter/widgets.dart';
 //import 'package:http/http.dart' as http;
 //import 'package:flython/flython.dart';
@@ -41,6 +42,8 @@ class Escpos extends StatelessWidget {
                 ),
                 child: TextField(
                   controller: controller,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     hintText: 'Digite algo...',
@@ -48,37 +51,46 @@ class Escpos extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 16.16), 
+            const SizedBox(width: 10), 
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 15,),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(70, 50),
-                    foregroundColor: Colors.white, 
-                    backgroundColor: Colors.blue
+              children: <Widget>[
+                const SizedBox(height: 15),
+                SizedBox(
+                  width: 150,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(70, 50),
+                      foregroundColor: Colors.white, 
+                      backgroundColor: Colors.blue
+                      
+                    ),
+                    onPressed: () {
+                      enviarTextoPrinter();
+                      },
+                    child: const Text('Escrever'),
                   ),
-                  onPressed: () {
-                    enviarTextoPrinter();
-                    },
-                  child: const Text('Escrever'),
-                  
                 ),
-                const SizedBox(height: 16.16), 
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(70, 50),
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.blue
-                  ),
-                  onPressed: () {
-                    _chamarFuncaoPython('funcao2', 'none');
-                  },
-                  child: const Text('Cortar'),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: 150,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(70, 50),
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.blue
+                    ),
+                    onPressed: () {
+                      _chamarFuncaoPython('funcao2', 'none');
+                    },
+                    child: const Text('Cortar'),
+                  )
                 ),
               ],
             ),
+            const SizedBox(width: 10,)
           ],
         ),
       ),
