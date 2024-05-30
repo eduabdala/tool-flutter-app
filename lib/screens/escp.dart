@@ -65,7 +65,7 @@ class Escp extends StatelessWidget {
                       
                     ),
                     onPressed: () {
-                      enviarTextoPrinter();
+                      _chamarFuncaoPython('escrever', '');
                       },
                     child: const Text('Escrever'),
                   ),
@@ -81,7 +81,7 @@ class Escp extends StatelessWidget {
                       backgroundColor: Colors.blue
                     ),
                     onPressed: () {
-                      _chamarFuncaoPython('funcao2', 'none');
+                      _chamarFuncaoPython('cortar', 'null');
                     },
                     child: const Text('Cortar'),
                   )
@@ -119,14 +119,25 @@ void chamarFuncaoPythonWeb(xpto) async{
 
 final Shell shell = Shell();
 void _chamarFuncaoPython(String funcao, String arg2) async{
-
-  try {
-    var result = await shell.run('python lib\\screens\\commandsEscp.py $funcao $arg2');
-    //ignore: avoid_print
-    print(result.outText);
-  } catch (e) {
-    //ignore: avoid_print
-    print('erro ao executar o scrip python: $e');
+  String xpto = controller.text;
+  if(xpto != "null"){
+    try{
+      var result = await shell.run('python lib\\screens\\commandsEscp.py $funcao "$xpto"');
+      //ignore: avoid_print
+      print(result.outText);
+    } catch(e){
+      //ignore: avoid_print
+      print("erro ao executar o script python: $e");
+    }
+  } else{
+      try {
+        var resulte = await shell.run('python lib\\screens\\commandsEscp.py $funcao $arg2');
+        //ignore: avoid_print
+        print(resulte.outText);
+      } catch (e) {
+        //ignore: avoid_print
+        print('erro ao executar o scrip python: $e');
+      }
   }
 }
 
@@ -138,11 +149,9 @@ void dispose(){
 
 void enviarTextoPrinter() async{
   String xpto = controller.text;
-  String commandsPath = 'flutter-app\\lib\\screens';
-
   if (xpto.isNotEmpty){
     try{
-      ProcessResult result = await Process.run('python', ['$commandsPath\\commandsEscp.py funcao1 "$xpto"']);
+      ProcessResult result = await Process.run('sh', ['-c','python commandsEscp.py cmdEscrever "$xpto"']);
       //var result = await shell.run('python commands.py funcao1 $xpto');
       //ignore: avoid_print
       print('output: ${result.stdout}');

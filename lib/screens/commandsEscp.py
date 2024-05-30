@@ -413,9 +413,9 @@ def main(arg1, arg2):
         return 
     funcao = arg1
     texto = arg2
-    if funcao == 'funcao1':
-        print(pipeline_cmd_digitar(arg2))
-    elif funcao == 'funcao2':
+    if funcao == 'escrever':
+        print(pipeline_cmd_digitar(texto))
+    elif funcao == 'cortar':
         pipeline_cmd_guilhotina()
         print('ok')
     else:
