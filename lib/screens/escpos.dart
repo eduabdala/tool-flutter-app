@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:perto_printer/screens/protocolo_printer.dart';
-import 'package:path/path.dart' as p;
 //import 'package:flutter/widgets.dart';
 //import 'package:http/http.dart' as http;
 //import 'package:flython/flython.dart';
@@ -140,9 +139,10 @@ void dispose(){
 
 void enviarTextoPrinter() async{
   String xpto = controller.text;
+  String commandsPath = 'flutter-app\\lib\\screens';
   if (xpto.isNotEmpty){
     try{
-      ProcessResult result = await Process.run('sh', ['-c', 'python commandsEscp.py funcao1 $xpto']);
+      ProcessResult result = await Process.run('python', ['$commandsPath\\commandsEscp.py funcao1 "$xpto"']);
       //var result = await shell.run('python commands.py funcao1 $xpto');
       //ignore: avoid_print
       print('output: ${result.stdout}');

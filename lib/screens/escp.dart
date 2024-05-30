@@ -138,9 +138,11 @@ void dispose(){
 
 void enviarTextoPrinter() async{
   String xpto = controller.text;
+  String commandsPath = 'flutter-app\\lib\\screens';
+
   if (xpto.isNotEmpty){
     try{
-      ProcessResult result = await Process.run('sh', ['-c', 'python commandsEscp.py funcao1 "$xpto"']);
+      ProcessResult result = await Process.run('python', ['$commandsPath\\commandsEscp.py funcao1 "$xpto"']);
       //var result = await shell.run('python commands.py funcao1 $xpto');
       //ignore: avoid_print
       print('output: ${result.stdout}');
