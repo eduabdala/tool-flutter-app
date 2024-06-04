@@ -6,6 +6,7 @@ import 'package:perto_printer/screens/protocolo_printer.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:process_run/process_run.dart';
+import 'package:perto_printer/components/printer/buttons.dart';
 
 final TextEditingController controller = TextEditingController();
 
@@ -66,27 +67,15 @@ class Escpos extends StatelessWidget {
                       
                     ),
                     onPressed: () {
-                      enviarTextoPrinter();
+                      _chamarFuncaoPython('escrever', '');
                       },
                     child: const Text('Escrever'),
                   ),
                 ),
                 const SizedBox(height: 16),
-                SizedBox(
-                  width: 150,
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(70, 50),
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.blue
-                    ),
-                    onPressed: () {
-                      _chamarFuncaoPython('funcao2', 'none');
-                    },
-                    child: const Text('Cortar'),
-                  )
-                ),
+                const ButtonDefault(label: 'Cortar', function: 'cortar'),
+                const SizedBox(height: 16),
+                const ButtonDefault(label: 'Porta COM', function: 'cortar')
               ],
             ),
             const SizedBox(width: 10,)
@@ -118,19 +107,30 @@ void chamarFuncaoPythonWeb(xpto) async{
   }
 */
 
+
 final Shell shell = Shell();
 void _chamarFuncaoPython(String funcao, String arg2) async{
-
-  try {
-    var result = await shell.run('python lib\\screens\\commands.py $funcao $arg2');
-    //ignore: avoid_print
-    print(result.outText);
-  } catch (e) {
-    //ignore: avoid_print
-    print('erro ao executar o scrip python: $e');
+  String xpto = controller.text;
+  if(xpto != "null"){
+    try{
+      var result = await shell.run('python lib\\screens\\commandsEscp.py $funcao "$xpto"');
+      //ignore: avoid_print
+      print(result.outText);
+    } catch(e){
+      //ignore: avoid_print
+      print("erro ao executar o script python: $e");
+    }
+  } else{
+      try {
+        var resulte = await shell.run('python lib\\screens\\commandsEscp.py $funcao $arg2');
+        //ignore: avoid_print
+        print(resulte.outText);
+      } catch (e) {
+        //ignore: avoid_print
+        print('erro ao executar o scrip python: $e');
+      }
   }
 }
-
 @override
 void dispose(){
   controller.dispose();
@@ -139,10 +139,10 @@ void dispose(){
 
 void enviarTextoPrinter() async{
   String xpto = controller.text;
-  String commandsPath = 'flutter-app\\lib\\screens';
+  String commandsPath = 'lib\\screens';
   if (xpto.isNotEmpty){
     try{
-      ProcessResult result = await Process.run('python', ['$commandsPath\\commandsEscp.py funcao1 "$xpto"']);
+      ProcessResult result = await Process.run('python', ['$commandsPath\\commandsEscp.py escrever "$xpto"']);
       //var result = await shell.run('python commands.py funcao1 $xpto');
       //ignore: avoid_print
       print('output: ${result.stdout}');
