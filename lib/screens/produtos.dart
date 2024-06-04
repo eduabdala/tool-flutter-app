@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:perto_printer/screens/protocolo_printer.dart';
 
-
-class Produtos extends StatelessWidget{
-
+class Produtos extends StatelessWidget {
   const Produtos({super.key});
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return MaterialApp(
       title: 'produtos',
       theme: ThemeData(
-        primarySwatch: Colors.blue
+        primarySwatch: Colors.blue,
       ),
-      home:const FirstScreen(),
+      home: const FirstScreen(),
     );
   }
 }
 
-class FirstScreen extends StatelessWidget{
+class FirstScreen extends StatelessWidget {
   const FirstScreen({super.key});
 
   @override
@@ -36,24 +35,39 @@ class FirstScreen extends StatelessWidget{
               SizedBox(
                 width: 200,
                 height: 50,
-                child:ElevatedButton(
-                  onPressed:(){
+                child: ElevatedButton(
+                  onPressed: () {
                     Navigator.push(
-                      context, MaterialPageRoute(builder: (context) 
-                        => const ProtocoloPrinter())
-                          );
-                        }, 
+                      context,
+                      MaterialPageRoute(builder: (context) => const ProtocoloPrinter()),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white, backgroundColor: Colors.blue
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.blue,
                   ),
                   child: const Text('Impressora de Recibos - ATM'),
                 ),
               ),
+              const SizedBox(height: 20), // Espaço entre os botões
+              SizedBox(
+                width: 200,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Ação para o botão Antiskimming
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: const Text('Antiskimming'),
+                ),
+              ),
             ],
-            ),
           ),
         ),
-      );
+      ),
+    );
   }
 }
-  
