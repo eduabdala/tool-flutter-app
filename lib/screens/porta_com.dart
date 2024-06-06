@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 
-class AntiskimmingScreen extends StatelessWidget {
-  const AntiskimmingScreen({super.key});
+class PortaCom extends StatelessWidget {
+  const PortaCom({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Antiskimming'),
+        title: const Text(
+          'Porta COM',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.blue,
+        iconTheme: const IconThemeData(color: Colors.white), // Configura a cor da flecha para branca
       ),
       body: Center(
         child: SizedBox(
@@ -16,13 +20,13 @@ class AntiskimmingScreen extends StatelessWidget {
           height: 50,
           child: ElevatedButton(
             onPressed: () {
-              // Ação para o botão Antiskimming-SU
+              // Ação para o botão Porta COM
             },
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
               backgroundColor: Colors.blue,
             ),
-            child: const Text('Antiskimming-SU'),
+            child: const Text('Porta COM'),
           ),
         ),
       ),

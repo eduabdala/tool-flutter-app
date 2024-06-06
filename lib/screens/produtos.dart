@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:perto_printer/screens/protocolo_printer.dart';
+import 'antiskimming_su.dart';
+
+void main() {
+  runApp(const Produtos());
+}
 
 class Produtos extends StatelessWidget {
   const Produtos({super.key});
@@ -7,7 +11,7 @@ class Produtos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'produtos',
+      title: 'Produtos',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -21,52 +25,74 @@ class FirstScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-          title: const Text("Produtos"),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        title: const Text(
+          "Produtos",
+          style: TextStyle(color: Colors.white),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                width: 200,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const ProtocoloPrinter()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.blue,
-                  ),
-                  child: const Text('Impressora de Recibos - ATM'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              width: 200,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Ação do botão Impressora de Recibos - ATM
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue,
                 ),
+                child: const Text('Impressora de Recibos - ATM'),
               ),
-              const SizedBox(height: 20), // Espaço entre os botões
-              SizedBox(
-                width: 200,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Ação para o botão Antiskimming
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.blue,
-                  ),
-                  child: const Text('Antiskimming'),
+            ),
+            const SizedBox(height: 20), // Espaço entre os botões
+            SizedBox(
+              width: 200,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AntiskimmingScreen()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue,
                 ),
+                child: const Text('Antiskimming'),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+}
+
+class AntiskimmingScreen extends StatelessWidget {
+  const AntiskimmingScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Antiskimming',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.blue,
+        iconTheme: const IconThemeData(color: Colors.white), // Configura a cor da flecha para branca
+      ),
+      body: const Center(
+        child: AntiskimmingSUButton(),
       ),
     );
   }
