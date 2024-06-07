@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'antiskimming_su.dart';
-
-void main() {
-  runApp(const Produtos());
-}
+import 'protocolo_printer.dart';
 
 class Produtos extends StatelessWidget {
   const Produtos({super.key});
@@ -43,7 +40,10 @@ class FirstScreen extends StatelessWidget {
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  // Ação do botão Impressora de Recibos - ATM
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ProtocoloPrinter()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,

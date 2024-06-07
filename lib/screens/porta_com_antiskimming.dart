@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-
+ 
 class PortaCom extends StatelessWidget {
   const PortaCom({super.key});
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,10 +14,10 @@ class PortaCom extends StatelessWidget {
         backgroundColor: Colors.blue,
         iconTheme: const IconThemeData(color: Colors.white), // Configura a cor da flecha para branca
       ),
-      body: Center(
-        child: SizedBox(
-          width: 200,
-          height: 50,
+      body: Align(
+        alignment: Alignment.topLeft,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: ElevatedButton(
             onPressed: () {
               // Ação para o botão Porta COM
