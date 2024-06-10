@@ -12,6 +12,7 @@ class _PortaComState extends State<PortaCom> {
   final _formKey = GlobalKey<FormState>();
   String? _selectedPort;
   List<String> _ports = [];
+  SerialPort? _serialPort;
 
   @override
   void initState() {
@@ -26,9 +27,35 @@ class _PortaComState extends State<PortaCom> {
     });
   }
 
-  bool _isPortConnected(String port) {
-    final serialPort = SerialPort(port);
-    return serialPort.openReadWrite();
+  Future<bool> _isPortConnected(String port) async {
+    _serialPort = SerialPort(port);
+    return _serialPort!.openReadWrite();
+  }
+
+  void _disconnectPort() {
+    if (_serialPort != null) {
+      _serialPort!.close();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Porta $_selectedPort desconectada')),
+      );
+    }
+  }
+
+  Future<void> _handleButtonPress() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      bool isConnected = await _isPortConnected(_selectedPort!);
+      if (isConnected) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Porta $_selectedPort selecionada e conectada')),
+        );
+        
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Falha ao conectar a porta $_selectedPort')),
+        );
+      }
+    }
   }
 
   @override
@@ -65,7 +92,7 @@ class _PortaComState extends State<PortaCom> {
                     });
                   },
                   validator: (value) {
-                    if (value == null || value.isEmpty || !_isPortConnected(value)) {
+                    if (value == null || value.isEmpty) {
                       return 'Selecione uma porta serial válida';
                     }
                     return null;
@@ -77,19 +104,21 @@ class _PortaComState extends State<PortaCom> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Porta $_selectedPort selecionada e conectada')),
-                    );
-                  }
-                },
+                onPressed: _handleButtonPress,
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.blue,
                 ),
-                child: const Text('Porta COM'),
+                child: const Text('Conectar Porta COM'),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _disconnectPort,
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.red,
+                ),
+                child: const Text('Desconectar Porta COM'),
               ),
             ],
           ),
