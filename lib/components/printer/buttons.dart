@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:process_run/process_run.dart';
 
-class ButtonDefault extends StatelessWidget{
-  const ButtonDefault({
+
+
+class ButtonCmdPython extends StatelessWidget{
+  const ButtonCmdPython({
     super.key,
     required this.label,
     required this.function,
+    
     });
 
- 
   final String label;
   final String function;
   @override
@@ -47,7 +49,7 @@ void _chamarFuncaoPython(String funcao) async{
     }
   } else{
       try {
-        var resulte = await shell.run('python lib\\screens\\commandsEscp.py $funcao');
+        var resulte = await shell.run('python lib\\screens\\commandsEscp.py  $funcao "$xpto"');
         //ignore: avoid_print
         print(resulte.outText);
       } catch (e) {

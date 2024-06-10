@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:process_run/process_run.dart';
 
+
 final TextEditingController controller = TextEditingController();
 
 class Escp extends StatelessWidget {
@@ -88,7 +89,7 @@ class Escp extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(width: 10,)
+            const SizedBox(width: 10,),
           ],
         ),
       ),
@@ -120,9 +121,10 @@ void chamarFuncaoPythonWeb(xpto) async{
 final Shell shell = Shell();
 void _chamarFuncaoPython(String funcao, String arg2) async{
   String xpto = controller.text;
+  String port = 'COM6';
   if(xpto != "null"){
     try{
-      var result = await shell.run('python lib\\screens\\commandsEscp.py $funcao "$xpto"');
+      var result = await shell.run('python lib\\screens\\commandsEscp.py $port $funcao "$xpto"');
       //ignore: avoid_print
       print(result.outText);
     } catch(e){
@@ -131,7 +133,7 @@ void _chamarFuncaoPython(String funcao, String arg2) async{
     }
   } else{
       try {
-        var resulte = await shell.run('python lib\\screens\\commandsEscp.py $funcao $arg2');
+        var resulte = await shell.run('python lib\\screens\\commandsEscp.py $port $funcao $arg2');
         //ignore: avoid_print
         print(resulte.outText);
       } catch (e) {

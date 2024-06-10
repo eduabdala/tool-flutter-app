@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:perto_printer/screens/escp.dart';
 import 'package:perto_printer/screens/escpos.dart';
 import 'package:perto_printer/screens/produtos.dart';
+import 'package:perto_printer/teste/tela_teste.dart';
 
 
 class ProtocoloPrinter extends StatelessWidget{
@@ -72,6 +73,23 @@ class ScreenProtocolo extends StatelessWidget{
                     foregroundColor: Colors.white, backgroundColor: Colors.blue
                   ),
                 child: const Text('ESCPOS'),
+               )
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: 200,
+              height: 50,
+              child:ElevatedButton(
+                onPressed: (){
+                  Navigator.push(
+                    context, MaterialPageRoute(builder: (context)
+                    => const TelaTeste())
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white, backgroundColor: Colors.blue
+                  ),
+                child: const Text('Teste'),
                )
             )
           ]),

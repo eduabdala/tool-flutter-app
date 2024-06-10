@@ -3,7 +3,9 @@ import sys
 import argparse
 from robot.api.deco import keyword
 from robot.api import logger
-ser = serial.Serial('COM6', 115200)
+import json
+import os
+
 
 @keyword("Eu escrevo o texto ${texto}")
 def pipeline_cmd_digitar(texto):
@@ -406,15 +408,14 @@ def cmd_define_avanco_papel(xpto):
     cmd = b'\x1b\x4a' + n
     ser.write(cmd)
 
-
-def main(arg1, arg2):
-    if len(sys.argv)<2:
+def main(arg2, arg3):
+    if len(sys.argv)<1:
         print("forneça o nome da funçao como argumento.")
-        return 
-    funcao = arg1
-    texto = arg2
+        return
+    funcao = arg2
+    texto = arg3
     if funcao == 'escrever':
-        print(pipeline_cmd_digitar(texto))
+        pipeline_cmd_digitar(texto)
     elif funcao == 'cortar':
         pipeline_cmd_guilhotina()
         print('ok')
@@ -427,5 +428,13 @@ if __name__ == "__main__":
     parser.add_argument("arg1", type=str, help="Primeiro argumento")
     parser.add_argument("arg2", type=str, help="Segundo argumento")
     args = parser.parse_args()
+    user_dir = os.path.expanduser('~')
+    config_path = os.path.join(user_dir, 'Documentos', 'serial_config.json')
+
+    with open('lib//screens//config.json') as f:
+        config = json.load(f)
+
+    ser = serial.Serial(config['port'], int(config['baudRate']))
+
     main(args.arg1, args.arg2)
 

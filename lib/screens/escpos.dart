@@ -43,7 +43,6 @@ class Escpos extends StatelessWidget {
                 child: TextField(
                   controller: controller,
                   keyboardType: TextInputType.multiline,
-                  maxLines: null,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     hintText: 'Digite algo...',
@@ -63,8 +62,7 @@ class Escpos extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(70, 50),
                       foregroundColor: Colors.white, 
-                      backgroundColor: Colors.blue
-                      
+                      backgroundColor: Colors.blue 
                     ),
                     onPressed: () {
                       _chamarFuncaoPython('escrever', '');
@@ -73,9 +71,9 @@ class Escpos extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const ButtonDefault(label: 'Cortar', function: 'cortar'),
+                const ButtonCmdPython(label: 'Cortar', function: 'cortar'),
                 const SizedBox(height: 16),
-                const ButtonDefault(label: 'Porta COM', function: 'cortar')
+                
               ],
             ),
             const SizedBox(width: 10,)
@@ -111,9 +109,10 @@ void chamarFuncaoPythonWeb(xpto) async{
 final Shell shell = Shell();
 void _chamarFuncaoPython(String funcao, String arg2) async{
   String xpto = controller.text;
+  String port = 'COM6';
   if(xpto != "null"){
     try{
-      var result = await shell.run('python lib\\screens\\commandsEscp.py $funcao "$xpto"');
+      var result = await shell.run('python lib\\screens\\commandsEscp.py $port $funcao "$xpto"');
       //ignore: avoid_print
       print(result.outText);
     } catch(e){
@@ -122,7 +121,7 @@ void _chamarFuncaoPython(String funcao, String arg2) async{
     }
   } else{
       try {
-        var resulte = await shell.run('python lib\\screens\\commandsEscp.py $funcao $arg2');
+        var resulte = await shell.run('python lib\\screens\\commandsEscp.py $port $funcao $arg2');
         //ignore: avoid_print
         print(resulte.outText);
       } catch (e) {
@@ -131,6 +130,8 @@ void _chamarFuncaoPython(String funcao, String arg2) async{
       }
   }
 }
+
+
 @override
 void dispose(){
   controller.dispose();
