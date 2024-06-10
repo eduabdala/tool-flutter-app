@@ -47,31 +47,33 @@ class _PortaComState extends State<PortaCom> {
         child: Form(
           key: _formKey,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'Porta Serial'),
-                items: _ports.map((port) {
-                  return DropdownMenuItem<String>(
-                    value: port,
-                    child: Text(port),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
+              SizedBox(
+                width: 200,  // Define a largura da caixa de seleção
+                child: DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(labelText: 'Porta Serial'),
+                  items: _ports.map((port) {
+                    return DropdownMenuItem<String>(
+                      value: port,
+                      child: Text(port),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedPort = value;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty || !_isPortConnected(value)) {
+                      return 'Selecione uma porta serial válida';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
                     _selectedPort = value;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty || !_isPortConnected(value)) {
-                    return 'Selecione uma porta serial válida';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _selectedPort = value;
-                },
+                  },
+                ),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
