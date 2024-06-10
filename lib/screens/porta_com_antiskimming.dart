@@ -15,7 +15,7 @@ class PortaCom extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.white), // Configura a cor da flecha para branca
       ),
       body: Align(
-        alignment: Alignment.topLeft,
+        alignment: Alignment.topRight,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: ElevatedButton(
