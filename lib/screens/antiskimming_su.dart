@@ -1,26 +1,35 @@
 import 'package:flutter/material.dart';
 import 'porta_com_antiskimming.dart';
 
-class AntiskimmingSUButton extends StatelessWidget {
-  const AntiskimmingSUButton({super.key});
+//segunda tela para ir para porta COM
+
+class AntiskimmingSUTela extends StatelessWidget {
+  const AntiskimmingSUTela({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 200,
-      height: 50,
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const PortaCom()),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.white,
-          backgroundColor: Colors.blue,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Antiskimming-SU'),
+      ),
+      body: Center(
+        child: SizedBox(
+          width: 200,
+          height: 50,
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PortaCom()),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.blue,
+            ),
+            child: const Text('Antiskimming-SU'),
+          ),
         ),
-        child: const Text('Antiskimming-SU'),
       ),
     );
   }

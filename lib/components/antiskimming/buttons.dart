@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:perto_printer/screens/porta_com_antiskimming.dart';
+import 'package:perto_printer/screens/antiskimming_su.dart';
 
-class AntiskimmingSUButton extends StatelessWidget{
+//primeira tela
+
+class AntiskimmingSUButton extends StatelessWidget {
   const AntiskimmingSUButton({super.key,});
 
- 
   @override
   Widget build(BuildContext context){
     return SizedBox(
@@ -14,7 +15,7 @@ class AntiskimmingSUButton extends StatelessWidget{
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const PortaCom()),
+                    MaterialPageRoute(builder: (context) => const AntiskimmingSUTela()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -26,9 +27,6 @@ class AntiskimmingSUButton extends StatelessWidget{
             );
   }
 }
-
-
-
 class AntiskimmingScreen extends StatelessWidget {
   const AntiskimmingScreen({super.key});
 
