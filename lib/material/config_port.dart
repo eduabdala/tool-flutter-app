@@ -1,15 +1,13 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
-import 'package:path_provider/path_provider.dart';
 
 class ConfigScreen extends StatefulWidget{
   const ConfigScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ConfigScreenState createState() => _ConfigScreenState();
 }
 
@@ -32,8 +30,7 @@ class _ConfigScreenState extends State<ConfigScreen> {
   }
 
   Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
+    return Directory.current.path;
   }
 
   Future<File> get _localFile async {
@@ -52,6 +49,7 @@ class _ConfigScreenState extends State<ConfigScreen> {
        'baudRate': _baudRate,
      };
      await _writeConfig(config);
+     // ignore: use_build_context_synchronously
      ScaffoldMessenger.of(context).showSnackBar(
          const SnackBar(content: Text('Configuração salva com sucesso!')));
    }
@@ -61,16 +59,16 @@ class _ConfigScreenState extends State<ConfigScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('config porta serial'),
+        title: const Text('config porta serial'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
             children:<Widget> [
               DropdownButtonFormField<String>(
-                decoration: InputDecoration(labelText: 'Porta Serial'),
+                decoration: const InputDecoration(labelText: 'Porta Serial'),
                 items: _ports.map((port) {
                   return DropdownMenuItem<String>(
                     value: port,
@@ -93,7 +91,7 @@ class _ConfigScreenState extends State<ConfigScreen> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: ('velocidade (baud rate)')),
+                decoration: const InputDecoration(labelText: ('velocidade (baud rate)')),
                 keyboardType: TextInputType.number,
                 initialValue: _baudRate,
                 validator: (value) {
@@ -106,29 +104,13 @@ class _ConfigScreenState extends State<ConfigScreen> {
                   _baudRate = value!;
                 },
               ),
-              SizedBox(height: 20),
-              ElevatedButton(onPressed: _saveConfig, child: Text('Salvar Configuração'))
+              const SizedBox(height: 20),
+              ElevatedButton(onPressed: _saveConfig, child: const Text('Salvar Configuração'))
             ],
           ),
         )
       ),
     );
-  }
-  void _asaveConfig() async {
-  if(_formKey.currentState!.validate()) {
-    _formKey.currentState!.save();
-  
-    final config = {
-      'port': _selectedPort,
-      'baudRate': _baudRate,
-    };
-
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('serialConfig', jsonEncode(config));
-
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Configuração Salva")));
-    
-    }
   }
 }
 

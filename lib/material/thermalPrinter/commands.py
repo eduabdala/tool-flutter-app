@@ -408,12 +408,12 @@ def cmd_define_avanco_papel(xpto):
     cmd = b'\x1b\x4a' + n
     ser.write(cmd)
 
-def main(arg2, arg3):
+def main(arg1, arg2):
     if len(sys.argv)<1:
         print("forneça o nome da funçao como argumento.")
         return
-    funcao = arg2
-    texto = arg3
+    funcao = arg1
+    texto = arg2
     if funcao == 'escrever':
         pipeline_cmd_digitar(texto)
     elif funcao == 'cortar':
@@ -428,10 +428,7 @@ if __name__ == "__main__":
     parser.add_argument("arg1", type=str, help="Primeiro argumento")
     parser.add_argument("arg2", type=str, help="Segundo argumento")
     args = parser.parse_args()
-    user_dir = os.path.expanduser('~')
-    config_path = os.path.join(user_dir, 'Documentos', 'serial_config.json')
-
-    with open('lib//screens//config.json') as f:
+    with open('serial_config.json') as f:
         config = json.load(f)
 
     ser = serial.Serial(config['port'], int(config['baudRate']))

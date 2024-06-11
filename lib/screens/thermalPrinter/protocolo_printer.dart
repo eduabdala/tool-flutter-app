@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:perto_printer/screens/escp.dart';
-import 'package:perto_printer/screens/escpos.dart';
+import 'package:perto_printer/screens/thermalPrinter/escpos.dart';
 import 'package:perto_printer/screens/produtos.dart';
 import 'package:perto_printer/teste/tela_teste.dart';
+import 'package:perto_printer/screens/thermalPrinter/escp.dart';
 
 
 class ProtocoloPrinter extends StatelessWidget{

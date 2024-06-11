@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:perto_printer/screens/protocolo_printer.dart';
+import 'package:perto_printer/screens/thermalPrinter/protocolo_printer.dart';
 
 
 class Produtos extends StatelessWidget{

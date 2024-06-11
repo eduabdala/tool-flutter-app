@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:process_run/process_run.dart';
 
@@ -20,6 +19,7 @@ class SerialConfigScreen extends StatefulWidget {
   const SerialConfigScreen({super.key, required this.onConfigSave});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SerialConfigScreenState createState() => _SerialConfigScreenState();
 }
 
@@ -50,6 +50,7 @@ class _SerialConfigScreenState extends State<SerialConfigScreen> {
         }
       });
     } catch (e) {
+      // ignore: avoid_print
       print('Error: $e');
     }
   }
