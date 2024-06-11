@@ -3,7 +3,7 @@ import 'package:perto_printer/screens/produtos.dart';
 
 
 void main() {
-  runApp(const Produtos());
+  runApp(Produtos());
   }
 
 
