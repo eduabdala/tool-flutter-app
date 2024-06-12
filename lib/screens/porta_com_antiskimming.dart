@@ -1,6 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 
+class SerialConnectionService {
+  static final SerialConnectionService _instance = SerialConnectionService._internal();
+  SerialPort? _serialPort;
+  String? _selectedPort;
+
+  factory SerialConnectionService() {
+    return _instance;
+  }
+
+  SerialConnectionService._internal();
+
+  bool isConnected() => _serialPort?.isOpen ?? false;
+
+  String? get selectedPort => _selectedPort;
+
+  void connect(String port) {
+    _selectedPort = port;
+    _serialPort = SerialPort(port);
+    if (!_serialPort!.openReadWrite()) {
+      throw Exception('A porta ja esta conectada, SEU BURRO');
+    }
+  }
+
+  void disconnect() {
+    if (_serialPort != null) {
+      _serialPort!.close();
+      _serialPort = null;
+    }
+  }
+}
+
 class PortaCom extends StatefulWidget {
   const PortaCom({super.key});
 
@@ -10,13 +41,13 @@ class PortaCom extends StatefulWidget {
 
 class _PortaComState extends State<PortaCom> {
   final _formKey = GlobalKey<FormState>();
-  String? _selectedPort;
   List<String> _ports = [];
-  SerialPort? _serialPort;
+  String? _selectedPort;
 
   @override
   void initState() {
     super.initState();
+    _selectedPort = SerialConnectionService().selectedPort;
     _getAvailablePorts();
   }
 
@@ -27,39 +58,9 @@ class _PortaComState extends State<PortaCom> {
     });
   }
 
-  Future<bool> _isPortConnected(String port) async {
-    _serialPort = SerialPort(port);
-    return _serialPort!.openReadWrite();
-  }
-
-  void _disconnectPort() {
-    if (_serialPort != null) {
-      _serialPort!.close();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Porta $_selectedPort desconectada')),
-      );
-    }
-  }
-
-  Future<void> _handleButtonPress() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      bool isConnected = await _isPortConnected(_selectedPort!);
-      if (isConnected) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Porta $_selectedPort selecionada e conectada')),
-        );
-        
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Falha ao conectar a porta $_selectedPort')),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final connectionService = SerialConnectionService();
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -77,8 +78,9 @@ class _PortaComState extends State<PortaCom> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: 200,  // Define a largura da caixa de seleção
+                width: 200,
                 child: DropdownButtonFormField<String>(
+                  value: _selectedPort,
                   decoration: const InputDecoration(labelText: 'Porta Serial'),
                   items: _ports.map((port) {
                     return DropdownMenuItem<String>(
@@ -97,14 +99,25 @@ class _PortaComState extends State<PortaCom> {
                     }
                     return null;
                   },
-                  onSaved: (value) {
-                    _selectedPort = value;
-                  },
                 ),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _handleButtonPress,
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    try {
+                      connectionService.connect(_selectedPort!);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Porta $_selectedPort conectada')),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Falha ao conectar: $e')),
+                      );
+                    }
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.blue,
@@ -113,7 +126,12 @@ class _PortaComState extends State<PortaCom> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _disconnectPort,
+                onPressed: () {
+                  connectionService.disconnect();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Porta ${connectionService.selectedPort} desconectada')),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.red,
