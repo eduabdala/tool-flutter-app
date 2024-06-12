@@ -20,7 +20,7 @@ class SerialConnectionService {
     _selectedPort = port;
     _serialPort = SerialPort(port);
     if (!_serialPort!.openReadWrite()) {
-      throw Exception('A porta ja esta conectada, SEU BURRO');
+      throw Exception('A porta ja esta conectada.');
     }
   }
 
