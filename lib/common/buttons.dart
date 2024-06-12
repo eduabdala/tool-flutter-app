@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:process_run/process_run.dart';
-import 'package:perto_printer/material/config_port.dart';
+import 'package:flutter_app/common/config_port.dart';
 
 final TextEditingController controller = TextEditingController();
 
@@ -87,7 +87,7 @@ void _chamarFuncaoPython(String funcao) async{
   String xpto = controller.text;
   if(funcao == "escrever"){
     try{
-      var result = await shell.run('python lib\\material\\thermalPrinter\\commands.py $funcao "$xpto"');
+      var result = await shell.run('python lib\\produtos\\thermalPrinter\\commands.py $funcao "$xpto"');
       //ignore: avoid_print
       print(result.outText);
     } catch(e){
@@ -96,7 +96,7 @@ void _chamarFuncaoPython(String funcao) async{
     }
   } else{
       try {
-        var resulte = await shell.run('python lib\\material\\thermalPrinter\\commands.py  $funcao "$xpto"');
+        var resulte = await shell.run('python lib\\produtos\\thermalPrinter\\commands.py  $funcao "$xpto"');
         //ignore: avoid_print
         print(resulte.outText);
       } catch (e) {
@@ -110,7 +110,7 @@ void enviarTextoPrinter() async{
   String xpto = controller.text;
   if (xpto.isNotEmpty){
     try{
-      var result = await shell.run('python lib\\material\\thermalPrinter\\commands.py escrever "$xpto"');
+      var result = await shell.run('python lib\\produtos\\thermalPrinter\\commands.py escrever "$xpto"');
       //ignore:avoid_print
       print(result.outText);
     } catch (e){

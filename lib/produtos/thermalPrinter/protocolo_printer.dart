@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:perto_printer/screens/thermalPrinter/escpos.dart';
-import 'package:perto_printer/screens/produtos.dart';
-import 'package:perto_printer/teste/tela_teste.dart';
-import 'package:perto_printer/screens/thermalPrinter/escp.dart';
+import 'package:flutter_app/produtos/thermalPrinter/escpos.dart';
+import 'package:flutter_app/produtos/produtos.dart';
+import 'package:flutter_app/produtos/thermalPrinter/escp.dart';
 
 
 class ProtocoloPrinter extends StatelessWidget{
@@ -76,22 +75,6 @@ class ScreenProtocolo extends StatelessWidget{
                )
             ),
             const SizedBox(height: 16),
-            SizedBox(
-              width: 200,
-              height: 50,
-              child:ElevatedButton(
-                onPressed: (){
-                  Navigator.push(
-                    context, MaterialPageRoute(builder: (context)
-                    => const TelaTeste())
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: Colors.blue
-                  ),
-                child: const Text('Teste'),
-               )
-            )
           ]),
         )
       )

@@ -1,6 +1,6 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
-import 'package:perto_printer/material/buttons.dart';
+import 'package:flutter_app/common/buttons.dart';
 
 final TextEditingController controller = TextEditingController();
 

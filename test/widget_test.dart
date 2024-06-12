@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:perto_printer/screens/thermalPrinter/escp.dart';
+import 'package:flutter_app/produtos/thermalPrinter/escp.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {

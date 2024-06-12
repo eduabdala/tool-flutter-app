@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:perto_printer/screens/thermalPrinter/protocolo_printer.dart';
-import 'package:perto_printer/material/buttons.dart';
+import 'package:flutter_app/produtos/thermalPrinter/protocolo_printer.dart';
+import 'package:flutter_app/common/buttons.dart';
 
 class Escpos extends StatelessWidget {
   
