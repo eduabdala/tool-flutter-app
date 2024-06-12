@@ -9,12 +9,12 @@ class AntiskimmingSUTela extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue, // Cor azul na AppBar
-        foregroundColor: Colors.white, // Ícones e texto em branco
         title: const Text(
           'Antiskimming-SU',
           style: TextStyle(color: Colors.white),
         ),
+        backgroundColor: Colors.blue,  // Cor azul na AppBar
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: const Center(
         child: AntiskimmingSUButton(),
