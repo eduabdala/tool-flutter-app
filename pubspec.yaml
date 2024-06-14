@@ -38,7 +38,10 @@ dependencies:
   cupertino_icons: ^1.0.6
   json_annotation: ^4.0.1
   json_serializable: ^4.1.0
-  flutter_libserialport: ^0.2.0
+  flutter_libserialport: 0.4.0
+  ffi: ^2.1.2
+  win32: ^5.5.1
+
 
 dev_dependencies:
   flutter_test:
@@ -56,7 +59,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
+  assets: 
+    - lib/assets/screens_json/
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

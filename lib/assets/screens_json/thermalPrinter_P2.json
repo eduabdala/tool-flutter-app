@@ -1,0 +1,21 @@
+{
+  "id": "tela2",
+  "title": "Thermal Printer P2",
+  "class": "Thermal Printer",
+  "components": [
+    {
+      "type": "textfield",
+      "content": {"label": "teste", "hint": "teste"}
+    },
+    {
+      "type": "button",
+      "content": {"label": "cortar"},
+      "action": {"type": "python", "function": "cortar", "argument": "text"}
+    },
+    {
+      "type": "button",
+      "content": {"label": "escrever"},
+      "action": {"type": "python", "function": "escrever", "argument": "text"}
+    }
+  ]
+}
