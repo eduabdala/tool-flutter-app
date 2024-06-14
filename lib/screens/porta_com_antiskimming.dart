@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'package:process_run/shell.dart';
 
 class SerialConnectionService {
   static final SerialConnectionService _instance = SerialConnectionService._internal();
@@ -20,7 +21,7 @@ class SerialConnectionService {
     _selectedPort = port;
     _serialPort = SerialPort(port);
     if (!_serialPort!.openReadWrite()) {
-      throw Exception('A porta ja esta conectada.');
+      throw Exception('A porta já está conectada.');
     }
   }
 
@@ -28,6 +29,16 @@ class SerialConnectionService {
     if (_serialPort != null) {
       _serialPort!.close();
       _serialPort = null;
+    }
+  }
+
+  Future<String> connectAuto() async {
+    var shell = Shell();
+    try {
+      var result = await shell.run('python connect_auto.py');
+      return result.outText.trim();  // trim to remove any extra whitespace
+    } catch (e) {
+      return 'Falha ao executar script Python: ${e.toString()}';
     }
   }
 }
@@ -43,12 +54,14 @@ class _PortaComState extends State<PortaCom> {
   final _formKey = GlobalKey<FormState>();
   List<String> _ports = [];
   String? _selectedPort;
+  String _connectionStatus = '';
 
   @override
   void initState() {
     super.initState();
     _selectedPort = SerialConnectionService().selectedPort;
     _getAvailablePorts();
+    _connectAutomatically();
   }
 
   void _getAvailablePorts() {
@@ -58,9 +71,28 @@ class _PortaComState extends State<PortaCom> {
     });
   }
 
+  Future<void> _connectAutomatically() async {
+    final connectionService = SerialConnectionService();
+    try {
+      String result = await connectionService.connectAuto();
+      setState(() {
+        _connectionStatus = result.contains('Falha') ? 'Falha ao conectar automaticamente: $result' : 'Conectado automaticamente com sucesso.';
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(_connectionStatus)),
+      );
+    } catch (e) {
+      setState(() {
+        _connectionStatus = 'Falha ao conectar automaticamente: $e';
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Falha ao conectar automaticamente: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final connectionService = SerialConnectionService();
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -72,74 +104,33 @@ class _PortaComState extends State<PortaCom> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 200,
-                child: DropdownButtonFormField<String>(
-                  value: _selectedPort,
-                  decoration: const InputDecoration(labelText: 'Porta Serial'),
-                  items: _ports.map((port) {
-                    return DropdownMenuItem<String>(
-                      value: port,
-                      child: Text(port),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedPort = value;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Selecione uma porta serial válida';
-                    }
-                    return null;
-                  },
-                ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (_connectionStatus.isNotEmpty)
+              Text(
+                _connectionStatus,
+                style: TextStyle(color: Colors.green, fontSize: 16),
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-                    try {
-                      connectionService.connect(_selectedPort!);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Porta $_selectedPort conectada')),
-                      );
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Falha ao conectar: $e')),
-                      );
-                    }
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.blue,
-                ),
-                child: const Text('Conectar Porta COM'),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                final connectionService = SerialConnectionService();
+                connectionService.disconnect();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Porta ${connectionService.selectedPort} desconectada')),
+                );
+                setState(() {
+                  _connectionStatus = 'Desconectado';
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.red,
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  connectionService.disconnect();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Porta ${connectionService.selectedPort} desconectada')),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.red,
-                ),
-                child: const Text('Desconectar Porta COM'),
-              ),
-            ],
-          ),
+              child: const Text('Desconectar Porta COM'),
+            ),
+          ],
         ),
       ),
     );
