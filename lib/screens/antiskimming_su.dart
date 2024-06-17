@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'porta_com_antiskimming.dart';
 
-//segunda tela para ir para porta COM
-
 class AntiskimmingSUTela extends StatelessWidget {
   const AntiskimmingSUTela({super.key});
 
