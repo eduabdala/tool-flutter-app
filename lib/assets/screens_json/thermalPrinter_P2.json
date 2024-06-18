@@ -5,17 +5,34 @@
   "components": [
     {
       "type": "textfield",
-      "content": {"label": "teste", "hint": "teste"}
+      "content": {
+        "label": "teste",
+        "hint": "teste"
+      }
     },
     {
       "type": "button",
-      "content": {"label": "cortar"},
-      "action": {"type": "python", "function": "cortar", "argument": "text"}
+      "content": {
+        "label": "cortar"
+      },
+      "action": {
+        "path": "\\thermal_printer\\commands.py",
+        "type": "python",
+        "function": "cortar",
+        "argument": "text"
+      }
     },
     {
       "type": "button",
-      "content": {"label": "escrever"},
-      "action": {"type": "python", "function": "escrever", "argument": "text"}
+      "content": {
+        "label": "escrever"
+      },
+      "action": {
+        "path": "\\thermal_printer\\commands.py",
+        "type": "python",
+        "function": "escrever",
+        "argument":  "test"
+      }
     }
   ]
 }

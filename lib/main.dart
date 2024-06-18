@@ -13,7 +13,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   final List<ScreenModel> screens;
 
-  MyApp({required this.screens});
+  const MyApp({super.key, required this.screens});
 
   @override
   Widget build(BuildContext context) {

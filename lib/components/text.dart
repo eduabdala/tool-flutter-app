@@ -4,7 +4,7 @@ import '../models/component.dart';
 class TextComponent extends StatelessWidget {
   final Component component;
 
-  TextComponent({required this.component});
+  const TextComponent({super.key, required this.component});
 
   @override
   Widget build(BuildContext context) {

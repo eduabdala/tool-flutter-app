@@ -5,7 +5,7 @@ import 'dynamic_screen.dart';
 class ProductScreen extends StatelessWidget {
   final List<ScreenModel> screens;
 
-  ProductScreen({required this.screens});
+  const ProductScreen({super.key, required this.screens});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class ProductScreen extends StatelessWidget {
                     child: Text(screen.title),
                   ),
                 );
-              }).toList(),
+              }),
             ],
           ),
         ),

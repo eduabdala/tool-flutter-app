@@ -5,7 +5,7 @@ import '../components/component_factory.dart';
 class DynamicScreen extends StatelessWidget {
   final ScreenModel screen;
 
-  DynamicScreen({required this.screen});
+  const DynamicScreen({super.key, required this.screen});
 
   @override
   Widget build(BuildContext context) {
@@ -20,21 +20,21 @@ class DynamicScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Spacer(),
+            const Spacer(),
             SingleChildScrollView(
               child: Column(
                 children: screen.components.map((component) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: SizedBox(
-                      width: 150, 
+                      width: 250, 
                       child: ComponentFactory.createComponent(component, context),
                     ),
                   );
                 }).toList(),
               ),
             ),
-            Spacer(),
+            const Spacer(),
           ],
         ),
       ),

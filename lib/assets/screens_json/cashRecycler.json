@@ -1,0 +1,47 @@
+{
+  "id": "cashRecycler",
+  "title": "Cash Recycler - Key Derivation",
+  "class": "Cash Recycler",
+  "modelo": "modelo1",
+  "components": [
+    {
+      "type": "textfield",
+      "content": {
+        "label": "Hardware ID (Decimal)",
+        "hint": "id"
+      }
+    },
+    {
+      "type": "textfield",
+      "content": {
+        "label": "Original Key",
+        "hint": "key"
+      }
+    },
+    {
+      "type": "button",
+      "content": {
+        "label": "Derive Key"
+      },
+      "action": {
+        "path": "\\cashRecycler\\commands.py",
+        "type": "python",
+        "function": "deriveKey"
+      }
+    },
+    {
+      "type":"textfield",
+      "content": {
+        "label": "Derived Key",
+        "hint": ""
+      }
+    },
+    {
+      "type":"textfield",
+      "content": {
+        "label": "KCV",
+        "hint": ""
+      }
+    }
+  ]
+}

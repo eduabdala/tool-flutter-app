@@ -1,24 +1,15 @@
 import 'dart:io';
 
-void runPythonFunction(String functionName, String arguments) {
-// Caminho para o script Python
-String pythonScriptPath = 'lib\\services\\thermal_printer\\commands.py'; // Substitua pelo caminho correto
+Future<String> runPythonFunction(String scriptPath, String functionName, String arguments) async {
 
-// Argumentos que serão passados para o script Python
-//List<String> arguments = ['cortar', 'arg2']; // Substitua pelos argumentos necessários
+  String pythonScriptPath = 'lib/services/$scriptPath';
 
-// Executando o script Python
-Process.run('python', [pythonScriptPath, functionName, arguments]).then((ProcessResult result) {
-if (result.exitCode == 0) {
-print('Função Python $functionName executada com sucesso.');
-print('Saída do Python:');
-print(result.stdout);
-} else {
-print('Erro ao executar a função Python $functionName.');
-print('Erro:');
-print(result.stderr);
-}
-}).catchError((error) {
-print('Erro ao executar a função Python $functionName: $error');
-});
+
+  ProcessResult result = await Process.run('python', [pythonScriptPath, functionName, arguments]);
+  
+  if (result.exitCode == 0) {
+    return result.stdout as String;
+  } else {
+    throw Exception(result.stderr);
+  }
 }
