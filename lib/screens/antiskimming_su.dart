@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:process_run/shell.dart';
 import 'porta_com_antiskimming.dart';
 
 class AntiskimmingSUTela extends StatelessWidget {
@@ -7,7 +8,7 @@ class AntiskimmingSUTela extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( 
+      appBar: AppBar(
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         title: const Text('Antiskimming-SU'),
@@ -32,5 +33,18 @@ class AntiskimmingSUTela extends StatelessWidget {
         ),
       ),
     );
+  }
+
+void _executePythonFunctionSU(String funcao) async{
+final shell = Shell();
+ 
+    try{
+      var result = await shell.run('python lib\\material\\test\\libraries\\commands.py $funcao');
+      //ignore: avoid_print
+      print(result.outText);
+    } catch(e){
+      //ignore: avoid_print
+      print("erro ao executar o script python: $e");
+}
   }
 }

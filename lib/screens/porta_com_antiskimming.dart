@@ -61,7 +61,6 @@ class _PortaComState extends State<PortaCom> {
     super.initState();
     _selectedPort = SerialConnectionService().selectedPort;
     _getAvailablePorts();
-    _connectAutomatically();
   }
 
   void _getAvailablePorts() {
@@ -69,26 +68,6 @@ class _PortaComState extends State<PortaCom> {
     setState(() {
       _ports = ports;
     });
-  }
-
-  Future<void> _connectAutomatically() async {
-    final connectionService = SerialConnectionService();
-    try {
-      String result = await connectionService.connectAuto();
-      setState(() {
-        _connectionStatus = result.contains('Falha') ? 'Falha ao conectar automaticamente: $result' : 'Conectado automaticamente com sucesso.';
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_connectionStatus)),
-      );
-    } catch (e) {
-      setState(() {
-        _connectionStatus = 'Falha ao conectar automaticamente: $e';
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Falha ao conectar automaticamente: $e')),
-      );
-    }
   }
 
   @override
@@ -113,26 +92,44 @@ class _PortaComState extends State<PortaCom> {
                 style: TextStyle(color: Colors.green, fontSize: 16),
               ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                final connectionService = SerialConnectionService();
-                connectionService.disconnect();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Porta ${connectionService.selectedPort} desconectada')),
-                );
-                setState(() {
-                  _connectionStatus = 'Desconectado';
-                });
-              },
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.red,
-              ),
-              child: const Text('Desconectar Porta COM'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SizedBox(
+                  width: 200,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _executePythonFunctionSU("pipeline_serial_port");
+                      _executePythonFunctionSU("calibrate_sensors");
+                      // Ação do botão "Calibrar"
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.blue,
+                    ),
+                    child: const Text('Calibrar'),
+                  ),
+                ),
+              ],
             ),
+            const SizedBox(height: 20),
+            // Outros widgets ou botões aqui, se necessário
           ],
         ),
       ),
     );
+  }
+  void _executePythonFunctionSU(String funcao) async{
+final shell = Shell();
+ 
+    try{
+      var result = await shell.run('python lib\\material\\test\\libraries\\commands.py $funcao');
+      //ignore: avoid_print
+      print(result.outText);
+    } catch(e){
+      //ignore: avoid_print
+      print("erro ao executar o script python: $e");
+    }
   }
 }

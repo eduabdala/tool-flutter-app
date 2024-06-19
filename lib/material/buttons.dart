@@ -81,8 +81,10 @@ class MenuConfig extends StatelessWidget{
   }
 }
 
-
 final Shell shell = Shell();
+
+
+
 void _chamarFuncaoPython(String funcao) async{
   String xpto = controller.text;
   if(funcao == "escrever"){
