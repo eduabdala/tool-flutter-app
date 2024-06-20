@@ -419,6 +419,8 @@ def main(arg1, arg2):
     elif funcao == 'cortar':
         pipeline_cmd_guilhotina()
         print('ok')
+    elif funcao == 'italico':
+        pipeline_cmd_italico()
     else:
         print(f"funcao {funcao} nao reconhecida.")
 

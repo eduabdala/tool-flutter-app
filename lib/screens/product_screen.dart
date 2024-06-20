@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../models/screen.dart';
 import 'dynamic_screen.dart';
 
@@ -19,7 +20,7 @@ class ProductScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+            children: <Widget>[
               ...screens.map((screen) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -27,6 +28,7 @@ class ProductScreen extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       foregroundColor: Colors.white,
+                      fixedSize: const Size(150, 40)
                     ),
                     onPressed: () {
                       Navigator.push(

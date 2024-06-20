@@ -4,35 +4,9 @@
   "class": "Thermal Printer",
   "components": [
     {
-      "type": "textfield",
-      "content": {
-        "label": "teste",
-        "hint": "teste"
-      }
-    },
-    {
       "type": "button",
-      "content": {
-        "label": "cortar"
-      },
-      "action": {
-        "path": "\\thermal_printer\\commands.py",
-        "type": "python",
-        "function": "cortar",
-        "argument": "text"
-      }
-    },
-    {
-      "type": "button",
-      "content": {
-        "label": "escrever"
-      },
-      "action": {
-        "path": "\\thermal_printer\\commands.py",
-        "type": "python",
-        "function": "escrever",
-        "argument":  "test"
-      }
+      "content": {"label": "Commands"},
+      "action": {"type": "navigate", "target": "printer"}
     }
   ]
 }

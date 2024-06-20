@@ -40,8 +40,7 @@ def derive_key(hw_id, original_key):
         derivated_key = derivate_key(original_key, hashed_serial)
         kcv = calculate_kcv(derivated_key)
         
-        print(derivated_key)
-        print(kcv)
+        return print(derivated_key,kcv)
     except Exception as e:
         messagebox.showerror("Error", str(e))
 
