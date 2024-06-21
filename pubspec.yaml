@@ -41,6 +41,7 @@ dependencies:
   flutter_libserialport: 0.4.0
   ffi: ^2.1.2
   win32: ^5.5.1
+  path_provider: ^2.0.13
 
 
 dev_dependencies:
@@ -61,6 +62,9 @@ dev_dependencies:
 flutter:
   assets: 
     - lib/assets/screens_json/
+    - lib/services/thermal_printer/
+    - lib/services/cashRecycler/commands.py
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

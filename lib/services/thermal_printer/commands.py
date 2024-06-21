@@ -421,6 +421,8 @@ def main(arg1, arg2):
         print('ok')
     elif funcao == 'italico':
         pipeline_cmd_italico()
+    elif funcao == 'QRCode':
+        cmd_qr_code(texto,'pequeno')
     else:
         print(f"funcao {funcao} nao reconhecida.")
 

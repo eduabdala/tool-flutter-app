@@ -36,7 +36,6 @@ class ButtonComponent extends StatelessWidget {
         onPressed = () => runPythonFunction(component!.action!['path'],component!.action!['function'],component!.action!['arg1']);
       }
     } else {
-      // Use os parâmetros fornecidos diretamente
       buttonLabel = label!;
       if (target != null) {
         onPressed = () => Navigator.pushNamed(context, '/$target');

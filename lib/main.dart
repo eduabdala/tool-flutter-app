@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       routes: {
         for (var screen in screens) '/${screen.id}': (context) => DynamicScreen(screen: screen),
         '/printer': (context) => Escp(),
-        '/cashRecycler': (context) => CashRecycler()
+        '/cashRecycler': (context) => CashRecycler(),
       },
     );
   }
