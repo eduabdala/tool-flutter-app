@@ -53,7 +53,7 @@ class FirstScreen extends StatelessWidget {
                 child: const Text('Impressora de Recibos - ATM'),
               ),
             ),
-            const SizedBox(height: 20), // Espaço entre os botões
+            const SizedBox(height: 20),
             const AntiskimmingSUButton()
           ],
         ),

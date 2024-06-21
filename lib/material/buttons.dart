@@ -90,19 +90,15 @@ void _chamarFuncaoPython(String funcao) async{
   if(funcao == "escrever"){
     try{
       var result = await shell.run('python lib\\material\\thermalPrinter\\commands.py $funcao "$xpto"');
-      //ignore: avoid_print
       print(result.outText);
     } catch(e){
-      //ignore: avoid_print
       print("erro ao executar o script python: $e");
     }
   } else{
       try {
         var resulte = await shell.run('python lib\\material\\thermalPrinter\\commands.py  $funcao "$xpto"');
-        //ignore: avoid_print
         print(resulte.outText);
       } catch (e) {
-        //ignore: avoid_print
         print('erro ao executar o scrip python: $e');
       }
   }
@@ -116,7 +112,6 @@ void enviarTextoPrinter() async{
       //ignore:avoid_print
       print(result.outText);
     } catch (e){
-      //ignore: avoid_print
       print('Erro ao executar o script python: $e');
     }
   }

@@ -125,10 +125,8 @@ final shell = Shell();
  
     try{
       var result = await shell.run('python lib\\material\\test\\libraries\\commands.py $funcao');
-      //ignore: avoid_print
       print(result.outText);
     } catch(e){
-      //ignore: avoid_print
       print("erro ao executar o script python: $e");
     }
   }

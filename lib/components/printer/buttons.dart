@@ -8,7 +8,6 @@ class ButtonDefault extends StatelessWidget{
     required this.function,
     });
 
- 
   final String label;
   final String function;
   @override
@@ -39,19 +38,15 @@ void _chamarFuncaoPython(String funcao) async{
   if(xpto != "null"){
     try{
       var result = await shell.run('python lib\\screens\\commandsEscp.py $funcao "$xpto"');
-      //ignore: avoid_print
       print(result.outText);
     } catch(e){
-      //ignore: avoid_print
       print("erro ao executar o script python: $e");
     }
   } else{
       try {
         var resulte = await shell.run('python lib\\screens\\commandsEscp.py $funcao');
-        //ignore: avoid_print
         print(resulte.outText);
       } catch (e) {
-        //ignore: avoid_print
         print('erro ao executar o scrip python: $e');
       }
   }

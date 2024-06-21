@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:perto_printer/screens/antiskimming_su.dart';
 
-// Primeira tela
 
 class AntiskimmingSUButton extends StatelessWidget {
   const AntiskimmingSUButton({super.key});
@@ -38,7 +37,7 @@ class TestButton extends StatelessWidget {
       height: 50,
       child: ElevatedButton(
         onPressed: () {
-          // Ação a ser realizada quando o botão "Teste" for pressionado
+          
         },
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
@@ -62,7 +61,7 @@ class AntiskimmingScreen extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.blue,
-        iconTheme: const IconThemeData(color: Colors.white), // Configura a cor da flecha para branca
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Center(
         child: Column(
