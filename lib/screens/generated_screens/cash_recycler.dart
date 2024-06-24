@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show Clipboard, ClipboardData, LengthLimitingTextInputFormatter, TextInputFormatter, rootBundle;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
@@ -31,15 +31,13 @@ class _CashRecyclerState extends State<CashRecycler> {
   final TextEditingController _outputController1 = TextEditingController();
   final TextEditingController _outputController2 = TextEditingController();
 
-  // Lógica de validação para o campo Hardware ID (Decimal)
   bool validateController1(String value) {
     if (value.isEmpty) return false;
     return int.tryParse(value) != null;
   }
 
-  // Lógica de validação para o campo Original key
   bool validateController2(String value) {
-    return value.length >= 6;
+    return value.length == 64;
   }
 
   Future<void> _sendData() async {
@@ -87,6 +85,10 @@ class _CashRecyclerState extends State<CashRecycler> {
                 width: 250,
                 child: TextField(
                   controller: _controller1,
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(64), 
+                    HexadecimalDecimalInputFormatter(), 
+                  ],
                   onChanged: (value) {
                     setState(() {});
                   },
@@ -97,6 +99,13 @@ class _CashRecyclerState extends State<CashRecycler> {
                       ),
                     ),
                     labelText: 'Hardware ID(Decimal)',
+                    helperText: validateController1(_controller1.text)
+                        ? null
+                        : 'Insufficient or invalid characters.',
+                    helperStyle: TextStyle(
+                      color: validateController1(_controller1.text) ? Colors.green : Colors.red,
+                    ),
+                    suffixText: '${_controller1.text.length}',
                   ),
                 ),
               ),
@@ -105,6 +114,10 @@ class _CashRecyclerState extends State<CashRecycler> {
                 width: 250,
                 child: TextField(
                   controller: _controller2,
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(64),
+                    HexadecimalDecimalInputFormatter(), 
+                  ],
                   onChanged: (value) {
                     setState(() {});
                   },
@@ -115,6 +128,13 @@ class _CashRecyclerState extends State<CashRecycler> {
                       ),
                     ),
                     labelText: 'Original key',
+                    helperText: _controller2.text.length == 64
+                        ? null
+                        : 'Insufficient or invalid characters.',
+                    helperStyle: TextStyle(
+                      color: _controller2.text.length == 64 ? Colors.green : Colors.red,
+                    ),
+                    suffixText: '${_controller2.text.length}',
                   ),
                 ),
               ),
@@ -125,7 +145,7 @@ class _CashRecyclerState extends State<CashRecycler> {
                   foregroundColor: Colors.white,
                   fixedSize: const Size(180, 40),
                 ),
-                onPressed: _sendData,
+                onPressed: validateController2(_controller2.text) ? _sendData : null,
                 child: const Text('Send'),
               ),
               const SizedBox(height: 15),
@@ -134,9 +154,18 @@ class _CashRecyclerState extends State<CashRecycler> {
                 child: TextField(
                   controller: _outputController1,
                   readOnly: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Derived Key',
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.copy),
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(text: _outputController1.text));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Derived Key copied to clipboard')),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -146,9 +175,18 @@ class _CashRecyclerState extends State<CashRecycler> {
                 child: TextField(
                   controller: _outputController2,
                   readOnly: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'KCV',
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.copy),
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(text: _outputController2.text));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('KCV copied to clipboard')),
+                        );
+                      },
+                    ),
                   ),
                 ),
               )
@@ -157,5 +195,17 @@ class _CashRecyclerState extends State<CashRecycler> {
         ),
       ),
     );
+  }
+}
+
+class HexadecimalDecimalInputFormatter extends TextInputFormatter {
+  final RegExp _hexDecRegex = RegExp(r'^[0-9A-Fa-f]*$');
+
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    if (_hexDecRegex.hasMatch(newValue.text)) {
+      return newValue;
+    }
+    return oldValue;
   }
 }

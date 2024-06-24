@@ -28,7 +28,7 @@ class ProductScreen extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       foregroundColor: Colors.white,
-                      fixedSize: const Size(150, 40)
+                      fixedSize: const Size(175, 40)
                     ),
                     onPressed: () {
                       Navigator.push(

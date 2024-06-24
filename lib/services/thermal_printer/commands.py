@@ -414,15 +414,23 @@ def main(arg1, arg2):
         return
     funcao = arg1
     texto = arg2
-    if funcao == 'escrever':
+    if funcao == 'Print':
         pipeline_cmd_digitar(texto)
-    elif funcao == 'cortar':
+    elif funcao == 'Cut':
         pipeline_cmd_guilhotina()
         print('ok')
-    elif funcao == 'italico':
+    elif funcao == 'Italic':
         pipeline_cmd_italico()
     elif funcao == 'QRCode':
         cmd_qr_code(texto,'pequeno')
+    elif funcao == 'Bold':
+        pipeline_cmd_enfatizado()
+    elif funcao == 'Expandido':
+        pipeline_cmd_expandido()
+    elif funcao == 'Condensado':
+        pipeline_cmd_condensado()
+    elif funcao == 'Normal':
+        cmd_reset()
     else:
         print(f"funcao {funcao} nao reconhecida.")
 

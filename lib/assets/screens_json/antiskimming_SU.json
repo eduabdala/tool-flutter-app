@@ -11,7 +11,7 @@
     {
       "type": "button",
       "content": {"label": "Antiskimming - SU"},
-      "action": {"type": "navigate", "target": ""}
+      "action": {"type": "", "target": ""}
     }
   ]
 }
