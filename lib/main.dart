@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/screens/generated_screens/cash_recycler.dart';
 import 'package:flutter_app/screens/generated_screens/printer.dart';
+import 'package:flutter_app/screens/generated_screens/su.dart';
 import 'models/json_loader.dart';
 import 'models/screen.dart';
 import 'screens/dynamic_screen.dart';
@@ -20,11 +21,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: ProductScreen(screens: screens),
       routes: {
         for (var screen in screens) '/${screen.id}': (context) => DynamicScreen(screen: screen),
         '/printer': (context) => Escp(),
         '/cashRecycler': (context) => CashRecycler(),
+        '/antiskimmingSu': (context) => SuChartApp()
       },
     );
   }

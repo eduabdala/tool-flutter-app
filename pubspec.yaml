@@ -33,16 +33,14 @@ dependencies:
   flython: ^0.2.0
   http: ^0.13.5
   process_run: ^0.14.2
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   json_annotation: ^4.0.1
   json_serializable: ^4.1.0
-  flutter_libserialport: 0.4.0
+  flutter_libserialport: ^0.4.0
   ffi: ^2.1.2
   win32: ^5.5.1
   path_provider: ^2.0.13
-
+  syncfusion_flutter_charts: ^20.1.58
 
 dev_dependencies:
   flutter_test:
