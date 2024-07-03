@@ -112,7 +112,6 @@ void enviarTextoPrinter() async{
       //ignore:avoid_print
       print(result.outText);
     } catch (e){
-      //ignore: avoid_print
       print('Erro ao executar o script python: $e');
     }
   }

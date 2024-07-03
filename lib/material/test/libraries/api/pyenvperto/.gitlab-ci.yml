@@ -1,0 +1,51 @@
+stages: [build, analyze, test, coverage, deploy]
+
+unit-test:
+  stage: test
+  image: python:3.9.14-bullseye
+  tags: [ci-docker]
+  artifacts:
+    paths: ['.coverage', '.pytest_cache']
+    reports:
+      junit: tests.xml
+  script:
+    - chmod +x script/*.sh
+    - ./script/python_dev_dep.sh
+    - ./script/python_install_dep.sh
+    - ./script/python_pytest_cov_test.sh
+
+unit-coverage:
+  stage: coverage
+  image: python:3.9.14-bullseye
+  needs: [unit-test]
+  tags: [ci-docker]
+  coverage: '/^TOTAL.+?(\d+\%)$/'
+  artifacts:
+    reports:
+      cobertura: coverage.xml
+  script:
+    - chmod +x script/*.sh
+    - ./script/python_dev_dep.sh
+    - ./script/python_install_dep.sh
+    - ./script/python_pytest_cov_report.sh
+
+mypy-analyze:
+  stage: analyze
+  image: python:3.9.14-bullseye
+  tags: [ci-docker]
+  script:
+    - chmod +x script/*.sh
+    - ./script/python_dev_dep.sh
+    - ./script/python_install_dep.sh
+    - ./script/python_mypy_test.sh
+
+pylint-analyze:
+  stage: analyze
+  image: python:3.9.14-bullseye
+  allow_failure: true
+  tags: [ci-docker]
+  script:
+    - chmod +x script/*.sh
+    - ./script/python_dev_dep.sh
+    - ./script/python_install_dep.sh
+    - ./script/python_pylint_test.sh

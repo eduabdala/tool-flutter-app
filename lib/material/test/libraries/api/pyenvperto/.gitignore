@@ -1,0 +1,17 @@
+# Python files
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.coverage
+.pytest_cache
+
+# Mac OSX Files
+.DS_Store
+
+# Windows Files
+Thumbs.db
+
+# Others
+*.xml
+.env

@@ -1,0 +1,1 @@
+python -m coverage run -m --source=. pytest -v --junitxml=tests.xml

@@ -1,0 +1,2 @@
+robotframework==5.0.1
+pyserial==3.4
