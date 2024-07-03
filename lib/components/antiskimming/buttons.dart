@@ -68,7 +68,7 @@ class AntiskimmingScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
             AntiskimmingSUButton(),
-            SizedBox(height: 20), // Espaçamento entre os botões
+            SizedBox(height: 20),
             TestButton(),
           ],
         ),
