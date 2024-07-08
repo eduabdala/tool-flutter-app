@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -35,6 +35,7 @@ class _SerialChartAppState extends State<SuChartApp> {
   bool isPdMode = false;
   CommandMode commandMode = CommandMode.ASCII;
   Timer? sendTimer;
+  bool isLogging = false;
 
   @override
   void initState() {
@@ -72,11 +73,73 @@ class _SerialChartAppState extends State<SuChartApp> {
     subscription?.cancel();
     port?.close();
     port = null;
-    setState(() {
-      isPortOpen = false;
-      isPlaying = false;
-    });
+    if (mounted) {
+      setState(() {
+        isPortOpen = false;
+        isPlaying = false;
+      });
+    }
     _logMessage('Port $selectedPort closed.');
+  }
+
+  double? _calculateYMin() {
+    List<double> allValues = [
+      ...minData.map((data) => data.value),
+      ...midData.map((data) => data.value),
+      ...maxData.map((data) => data.value)
+    ];
+
+    if (allValues.isEmpty) return null;
+
+    double minValue = allValues.reduce((a, b) => a < b ? a : b);
+    double margin =
+        (allValues.reduce((a, b) => a > b ? a : b) - minValue) * 0.2;
+    return minValue - margin;
+  }
+
+  double? _calculateYMax() {
+    List<double> allValues = [
+      ...minData.map((data) => data.value),
+      ...midData.map((data) => data.value),
+      ...maxData.map((data) => data.value)
+    ];
+
+    if (allValues.isEmpty) return null;
+
+    double maxValue = allValues.reduce((a, b) => a > b ? a : b);
+    double margin =
+        (maxValue - allValues.reduce((a, b) => a < b ? a : b)) * 0.2;
+    return maxValue + margin;
+  }
+
+  double? _calculateYMinIn() {
+    List<double> allValues = [
+      ...inMinData.map((data) => data.value),
+      ...inMidData.map((data) => data.value),
+      ...inMaxData.map((data) => data.value)
+    ];
+
+    if (allValues.isEmpty) return null;
+
+    double minValue = allValues.reduce((a, b) => a < b ? a : b);
+    double margin =
+        (allValues.reduce((a, b) => a > b ? a : b) - minValue) * 0.2;
+    return minValue - margin;
+  }
+
+  double? _calculateYMaxIn() {
+    List<double> allValues = [
+      ...inMinData.map((data) => data.value),
+      ...inMidData.map((data) => data.value),
+      ...inMaxData.map((data) => data.value)
+    ];
+
+    if (allValues.isEmpty) return null;
+
+    double maxValue = allValues.reduce((a, b) => a > b ? a : b);
+    double margin =
+        (maxValue - allValues.reduce((a, b) => a < b ? a : b)) * 0.2;
+    return maxValue + margin;
   }
 
   void _sendCommand() {
@@ -130,17 +193,32 @@ class _SerialChartAppState extends State<SuChartApp> {
     return String.fromCharCode(bcc);
   }
 
-  void _onDataReceived(String data) {
-    _logMessage('Received: $data');
+  Future<void> _onDataReceived(String data) async {
+    _logMessage(data);
     _updateChartData(data);
+    if (isLogging) {
+      final directory = Directory.current;
+      final file = File('${directory.path}/logs.txt');
+      await file.writeAsString('$data', mode: FileMode.append);
+    }
   }
 
-  void _logMessage(String message) {
+  bool _isCsvData(String data) {
+    List<String> values = data.split(',');
+    if (values.length >= 5) {
+      return values.every((value) => double.tryParse(value) != null);
+    }
+    return false;
+  }
+
+  void _logMessage(String message) async {
     setState(() {
       logsController.text += '$message\n';
       logsController.selection =
           TextSelection.collapsed(offset: logsController.text.length);
     });
+
+    
   }
 
   void _startSendingStatusCommand() {
@@ -150,6 +228,7 @@ class _SerialChartAppState extends State<SuChartApp> {
       });
       setState(() {
         isPlaying = true;
+        isLogging = true; 
       });
     } else {
       _logMessage('Port not open. Cannot start sending commands.');
@@ -160,6 +239,7 @@ class _SerialChartAppState extends State<SuChartApp> {
     sendTimer?.cancel();
     setState(() {
       isPlaying = false;
+      isLogging = false;
     });
   }
 
@@ -247,50 +327,93 @@ class _SerialChartAppState extends State<SuChartApp> {
             child: Row(children: [
               Expanded(
                 child: SfCartesianChart(
-                  primaryXAxis: NumericAxis(),
+                  legend: Legend(
+                    isVisible: true,
+                    position: LegendPosition.top,
+                    alignment: ChartAlignment.near,
+                  ),
+                  primaryXAxis: NumericAxis(
+                    visibleMinimum:
+                        minData.isNotEmpty ? minData.last.timestamp - 10 : null,
+                    visibleMaximum:
+                        minData.isNotEmpty ? minData.last.timestamp : null,
+                  ),
+                  primaryYAxis: NumericAxis(
+                    visibleMinimum: _calculateYMin(),
+                    visibleMaximum: _calculateYMax(),
+                  ),
                   series: <ChartSeries>[
                     LineSeries<ChartData, double>(
                       dataSource: minData,
                       xValueMapper: (ChartData data, _) => data.timestamp,
                       yValueMapper: (ChartData data, _) => data.value,
                       name: 'Min Data',
+                      markerSettings: MarkerSettings(isVisible: true),
                     ),
-                    LineSeries<ChartData, double>(
+                    SplineSeries<ChartData, double>(
+                      splineType: SplineType.cardinal,
                       dataSource: midData,
                       xValueMapper: (ChartData data, _) => data.timestamp,
                       yValueMapper: (ChartData data, _) => data.value,
                       name: 'Mid Data',
+                      markerSettings: MarkerSettings(isVisible: true),
                     ),
                     LineSeries<ChartData, double>(
                       dataSource: maxData,
                       xValueMapper: (ChartData data, _) => data.timestamp,
                       yValueMapper: (ChartData data, _) => data.value,
                       name: 'Max Data',
+                      markerSettings: MarkerSettings(isVisible: true),
                     ),
                   ],
+                  zoomPanBehavior: ZoomPanBehavior(
+                    enablePinching: true,
+                    enableDoubleTapZooming: true,
+                    enablePanning: true,
+                  ),
+                  tooltipBehavior: TooltipBehavior(
+                    enable: true,
+                  ),
                 ),
               ),
               Expanded(
                 child: SfCartesianChart(
-                  primaryXAxis: NumericAxis(),
+                  legend: Legend(
+                    isVisible: true,
+                    position: LegendPosition.top,
+                    alignment: ChartAlignment.near,
+                  ),
+                  primaryXAxis: NumericAxis(
+                    visibleMinimum:
+                        minData.isNotEmpty ? minData.last.timestamp - 10 : null,
+                    visibleMaximum:
+                        minData.isNotEmpty ? minData.last.timestamp : null,
+                  ),
+                  primaryYAxis: NumericAxis(
+                    visibleMinimum: _calculateYMinIn(),
+                    visibleMaximum: _calculateYMaxIn(),
+                  ),
                   series: <ChartSeries>[
                     LineSeries<ChartData, double>(
                       dataSource: inMinData,
                       xValueMapper: (ChartData data, _) => data.timestamp,
                       yValueMapper: (ChartData data, _) => data.value,
                       name: 'In Min Data',
+                      markerSettings: MarkerSettings(isVisible: true),
                     ),
-                    LineSeries<ChartData, double>(
+                    SplineSeries<ChartData, double>(
                       dataSource: inMidData,
                       xValueMapper: (ChartData data, _) => data.timestamp,
                       yValueMapper: (ChartData data, _) => data.value,
                       name: 'In Mid Data',
+                      markerSettings: MarkerSettings(isVisible: true),
                     ),
                     LineSeries<ChartData, double>(
                       dataSource: inMaxData,
                       xValueMapper: (ChartData data, _) => data.timestamp,
                       yValueMapper: (ChartData data, _) => data.value,
                       name: 'In Max Data',
+                      markerSettings: MarkerSettings(isVisible: true),
                     ),
                   ],
                 ),
