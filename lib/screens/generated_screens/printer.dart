@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/services/python_service.dart';
 import 'package:flutter_app/components/config_port.dart';
+import 'package:flutter_app/components/popup_menu.dart';
 
 class Escp extends StatefulWidget {
   Escp({Key? key}) : super(key: key);
@@ -16,7 +17,7 @@ class _EscpState extends State<Escp> {
   @override
   void initState() {
     super.initState();
-    arg = ''; 
+    arg = '';
   }
 
   void _updateArg() {
@@ -28,6 +29,7 @@ class _EscpState extends State<Escp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.blue,
@@ -39,68 +41,125 @@ class _EscpState extends State<Escp> {
               Navigator.pop(context);
             },
           ),
+          actions: [
+            PopupMenu(
+              items: [
+                CustomPopupMenuItem(title: 'Config com', value: 'config com'),
+              ],
+              onSelected: (value) => (MenuConfig()),
+            ),
+          ],
         ),
         body: Center(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(
-                width: 400,
-                height: 400,
-                margin: const EdgeInsets.all(16.0),
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  border: Border.all(),
-                ),
-                child: TextField(
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  controller: _controllerPrinter,
-                  decoration: const InputDecoration(border: InputBorder.none),
-                  onChanged: (text) {
-                    _updateArg();
-                  },
-                ),
-              ),
+              _buildTextInput(),
               const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  const SizedBox(height: 15),
-                  ButtonComponent(component: ['thermal_printer/commands.py', 'Cut', '']),
-                  const SizedBox(height: 16),
-                  ButtonComponent(component: ['thermal_printer/commands.py', 'Print', arg]), 
-                  const SizedBox(height: 16),
-                  ButtonComponent(component: ['thermal_printer/commands.py', 'Italic', '']),
-                  const SizedBox(height: 16),
-                  ButtonComponent(component: ['thermal_printer/commands.py', 'QRCode', arg]),
-                  const SizedBox(height: 16),
-                  const MenuConfig()
-                ],
-              ),
+              _buildButtonColumn1(),
               const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  const SizedBox(height: 15),
-                  ButtonComponent(component: ['thermal_printer/commands.py', 'Bold', '']),
-                  const SizedBox(height: 16),
-                  ButtonComponent(component: ['thermal_printer/commands.py', 'Expandido', arg]), 
-                  const SizedBox(height: 16),
-                  ButtonComponent(component: ['thermal_printer/commands.py', 'Condensado', '']),
-                  const SizedBox(height: 16),
-                  ButtonComponent(component: ['thermal_printer/commands.py', 'Normal', arg]),
-                  const SizedBox(height: 16),
-                ],
-              )
+              _buildButtonColumn2(),
+              const SizedBox(width: 10),
+              _buildPreviewArea(),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildTextInput() {
+    return Container(
+      width: 400,
+      height: 400,
+      margin: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        border: Border.all(),
+      ),
+      child: TextField(
+        keyboardType: TextInputType.multiline,
+        maxLines: null,
+        controller: _controllerPrinter,
+        decoration: const InputDecoration(border: InputBorder.none),
+        onChanged: (text) {
+          _updateArg();
+        },
+      ),
+    );
+  }
+
+  Widget _buildButtonColumn1() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        const SizedBox(height: 15),
+        ButtonComponent(component: ['thermal_printer/commands.py', 'Cut', '']),
+        const SizedBox(height: 16),
+        ButtonComponent(component: ['thermal_printer/commands.py', 'Print', arg]),
+        const SizedBox(height: 16),
+        ButtonComponent(component: ['thermal_printer/commands.py', 'Italic', '']),
+        const SizedBox(height: 16),
+        ButtonComponent(component: ['thermal_printer/commands.py', 'QRCode', arg]),
+        const SizedBox(height: 16),
+        const MenuConfig()
+      ],
+    );
+  }
+
+  Widget _buildButtonColumn2() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        const SizedBox(height: 15),
+        ButtonComponent(component: ['thermal_printer/commands.py', 'Bold', '']),
+        const SizedBox(height: 16),
+        ButtonComponent(component: ['thermal_printer/commands.py', 'Expandido', arg]),
+        const SizedBox(height: 16),
+        ButtonComponent(component: ['thermal_printer/commands.py', 'Condensado', '']),
+        const SizedBox(height: 16),
+        ButtonComponent(component: ['thermal_printer/commands.py', 'Normal', arg]),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+  Widget _buildPreviewArea() {
+    return Container(
+      width: 370,
+      height: 400,
+      margin: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        border: Border.all(),
+      ),
+      child: SingleChildScrollView(
+        child: Text(
+          _formatPreview(arg),
+          style: const TextStyle(fontFamily: 'Courier', fontSize: 12),
+        ),
+      ),
+    );
+  }
+
+  String _formatPreview(String text) {
+    const int maxColsNormal = 48;
+
+    List<String> formattedLines = [];
+    List<String> lines = text.split('\n');
+
+    for (var line in lines) {
+      while (line.length > maxColsNormal) {
+        formattedLines.add(line.substring(0, maxColsNormal));
+        line = line.substring(maxColsNormal);
+      }
+      formattedLines.add(line);
+    }
+
+    return formattedLines.join('\n');
   }
 }
 

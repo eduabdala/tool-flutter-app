@@ -10,7 +10,7 @@
     },
     {
       "type": "button",
-      "content": {"label": "Antiskimming - SU"},
+      "content": {"label": "Status CSV"},
       "action": {"type": "navigate", "target": "antiskimmingSu"}
     }
   ]

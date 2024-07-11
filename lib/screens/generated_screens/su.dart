@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 enum CommandMode {
@@ -194,12 +195,28 @@ class _SerialChartAppState extends State<SuChartApp> {
   }
 
   Future<void> _onDataReceived(String data) async {
+    // Exibir o dado recebido no log da aplicação
     _logMessage(data);
+    // Atualizar os gráficos com os dados recebidos
     _updateChartData(data);
+    // Verificar se o modo de logging está ativado
     if (isLogging) {
-      final directory = Directory.current;
-      final file = File('${directory.path}/logs.txt');
-      await file.writeAsString('$data', mode: FileMode.append);
+      // Obter o diretório de downloads usando path_provider
+      final downloadsDirectory = await getDownloadsDirectory();
+      if (downloadsDirectory == null) {
+        _logMessage('Erro ao obter o diretório de Downloads.');
+        return;
+      }
+
+      // Criar o caminho completo do arquivo de logs
+      final file = File('${downloadsDirectory.path}\\logs.txt');
+
+      try {
+        // Escrever os dados recebidos no arquivo de logs
+        await file.writeAsString('$data\n', mode: FileMode.append);
+      } catch (e) {
+        _logMessage('Erro ao salvar os dados no arquivo: $e');
+      }
     }
   }
 
@@ -306,6 +323,30 @@ class _SerialChartAppState extends State<SuChartApp> {
     }
   }
 
+Future<void> _downloadLogs() async {
+    // Obter o diretório de downloads usando path_provider
+    final downloadsDirectory = await getDownloadsDirectory();
+    if (downloadsDirectory == null) {
+      _logMessage('Erro ao obter o diretório de Downloads.');
+      return;
+    }
+
+    // Criar o caminho completo do arquivo de logs
+    final file = File('${downloadsDirectory.path}\\logs.txt');
+
+    try {
+      // Ler o conteúdo do arquivo de logs
+      String logsText = await file.readAsString();
+      
+      // Exibir uma mensagem ou log informando sobre o download
+      _logMessage('Logs baixados para ${file.path}');
+
+      // TODO: Implementar a lógica para enviar o arquivo para o usuário ou processar conforme necessário
+    } catch (e) {
+      _logMessage('Erro ao ler o arquivo de logs: $e');
+    }
+  }
+
   @override
   void dispose() {
     _closePort();
@@ -320,6 +361,14 @@ class _SerialChartAppState extends State<SuChartApp> {
         title: Text('SU Data Chart'),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
+        actions: [
+        IconButton(
+          icon: Icon(Icons.download),
+          onPressed: () {
+            _downloadLogs();
+          },
+        ),
+      ],
       ),
       body: Column(
         children: [

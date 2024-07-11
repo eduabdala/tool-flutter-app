@@ -3,23 +3,6 @@ import 'package:flutter/services.dart' show Clipboard, ClipboardData, LengthLimi
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: CashRecycler(),
-    );
-  }
-}
-
 class CashRecycler extends StatefulWidget {
   @override
   _CashRecyclerState createState() => _CashRecyclerState();
@@ -95,11 +78,11 @@ class _CashRecyclerState extends State<CashRecycler> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: validateController1(_controller1.text) ? Colors.green : Colors.red,
+                        
                       ),
                     ),
                     labelText: 'Hardware ID(Decimal)',
-                    helperText: validateController1(_controller1.text)
+                    errorText: validateController1(_controller1.text)
                         ? null
                         : 'Insufficient or invalid characters.',
                     helperStyle: TextStyle(
@@ -124,11 +107,11 @@ class _CashRecyclerState extends State<CashRecycler> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: validateController2(_controller2.text) ? Colors.green : Colors.red,
+                        color:  Colors.red,
                       ),
                     ),
                     labelText: 'Original key',
-                    helperText: _controller2.text.length == 64
+                    errorText: _controller2.text.length == 64 
                         ? null
                         : 'Insufficient or invalid characters.',
                     helperStyle: TextStyle(
