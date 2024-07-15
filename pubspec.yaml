@@ -41,6 +41,7 @@ dependencies:
   win32: ^5.5.1
   path_provider: ^2.0.13
   syncfusion_flutter_charts: ^20.1.58
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

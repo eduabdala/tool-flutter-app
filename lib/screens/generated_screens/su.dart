@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:intl/intl.dart';
 
 enum CommandMode {
   ASCII,
@@ -37,6 +39,7 @@ class _SerialChartAppState extends State<SuChartApp> {
   CommandMode commandMode = CommandMode.ASCII;
   Timer? sendTimer;
   bool isLogging = false;
+  FocusNode logsFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -146,6 +149,9 @@ class _SerialChartAppState extends State<SuChartApp> {
   void _sendCommand() {
     if (port != null && isPortOpen) {
       String command = commandController.text.trim();
+      if (command == 'clear'){
+        _clearLogsField();
+      }
       if (isPdMode) {
         String fullCommand = "\x02$command\x03";
         String bcc = _calculateBCC(fullCommand);
@@ -154,21 +160,21 @@ class _SerialChartAppState extends State<SuChartApp> {
         if (commandMode == CommandMode.Hexadecimal) {
           List<int> bytes = _parseHexString(fullCommandWithBCC);
           port!.write(Uint8List.fromList(bytes));
-          _logMessage(
-              'Sent command in hexadecimal (pd mode): $fullCommandWithBCC');
+          _logMessage('Sent command in HEX (PD mode): $fullCommandWithBCC');
         } else {
           port!.write(
               Uint8List.fromList(utf8.encode(fullCommandWithBCC + '\n')));
-          _logMessage('Sent command in ASCII (pd mode): $fullCommandWithBCC');
+          _logMessage('Sent command in ASCII (PD Mode): $fullCommandWithBCC');
         }
       } else {
         if (commandMode == CommandMode.Hexadecimal) {
           List<int> bytes = _parseHexString(command);
           port!.write(Uint8List.fromList(bytes));
-          _logMessage('Sent command in hexadecimal: $command');
+          _logMessage('Sent command in HEX: $command');
         } else {
           port!.write(Uint8List.fromList(utf8.encode(command + '\n')));
           _logMessage('Sent command in ASCII: $command');
+          _onDataReceived;
         }
       }
       commandController.clear();
@@ -195,25 +201,24 @@ class _SerialChartAppState extends State<SuChartApp> {
   }
 
   Future<void> _onDataReceived(String data) async {
-    // Exibir o dado recebido no log da aplicação
-    _logMessage(data);
-    // Atualizar os gráficos com os dados recebidos
     _updateChartData(data);
-    // Verificar se o modo de logging está ativado
+
+    if (isPlaying == false) {
+      _logMessage(data);
+      return;
+    }
+
     if (isLogging) {
-      // Obter o diretório de downloads usando path_provider
       final downloadsDirectory = await getDownloadsDirectory();
       if (downloadsDirectory == null) {
         _logMessage('Erro ao obter o diretório de Downloads.');
         return;
       }
 
-      // Criar o caminho completo do arquivo de logs
       final file = File('${downloadsDirectory.path}\\logs.txt');
 
       try {
-        // Escrever os dados recebidos no arquivo de logs
-        await file.writeAsString('$data\n', mode: FileMode.append);
+        await file.writeAsString('$data', mode: FileMode.append);
       } catch (e) {
         _logMessage('Erro ao salvar os dados no arquivo: $e');
       }
@@ -234,8 +239,6 @@ class _SerialChartAppState extends State<SuChartApp> {
       logsController.selection =
           TextSelection.collapsed(offset: logsController.text.length);
     });
-
-    
   }
 
   void _startSendingStatusCommand() {
@@ -245,7 +248,7 @@ class _SerialChartAppState extends State<SuChartApp> {
       });
       setState(() {
         isPlaying = true;
-        isLogging = true; 
+        isLogging = true;
       });
     } else {
       _logMessage('Port not open. Cannot start sending commands.');
@@ -270,21 +273,16 @@ class _SerialChartAppState extends State<SuChartApp> {
         if (commandMode == CommandMode.Hexadecimal) {
           List<int> bytes = _parseHexString(fullCommandWithBCC);
           port!.write(Uint8List.fromList(bytes));
-          _logMessage(
-              'Sent command in hexadecimal (pd mode): $fullCommandWithBCC');
         } else {
           port!.write(
               Uint8List.fromList(utf8.encode(fullCommandWithBCC + '\n')));
-          _logMessage('Sent command in ASCII (pd mode): $fullCommandWithBCC');
         }
       } else {
         if (commandMode == CommandMode.Hexadecimal) {
           List<int> bytes = _parseHexString(command);
           port!.write(Uint8List.fromList(bytes));
-          _logMessage('Sent command in hexadecimal: $command');
         } else {
           port!.write(Uint8List.fromList(utf8.encode(command + '\n')));
-          _logMessage('Sent command in ASCII: $command');
         }
       }
     } else {
@@ -315,33 +313,25 @@ class _SerialChartAppState extends State<SuChartApp> {
       double minValue = double.parse(parts[6]);
       double midValue = double.parse(parts[7]);
       double maxValue = double.parse(parts[8]);
-
-      if (minValue > 0.0 || midValue > 0.0 || maxValue > 0.0) {
-        _logMessage(
-            'Threshold exceeded: Min=$minValue, Mid=$midValue, Max=$maxValue');
-      }
     }
   }
 
-Future<void> _downloadLogs() async {
-    // Obter o diretório de downloads usando path_provider
+  Future<void> _downloadLogs() async {
     final downloadsDirectory = await getDownloadsDirectory();
     if (downloadsDirectory == null) {
       _logMessage('Erro ao obter o diretório de Downloads.');
       return;
     }
-
-    // Criar o caminho completo do arquivo de logs
-    final file = File('${downloadsDirectory.path}\\logs.txt');
-
     try {
-      // Ler o conteúdo do arquivo de logs
-      String logsText = await file.readAsString();
-      
-      // Exibir uma mensagem ou log informando sobre o download
-      _logMessage('Logs baixados para ${file.path}');
+      final file = File('${downloadsDirectory.path}\\logs.txt');
+      if (!await file.exists()) {
+        await file.create();
+        _logMessage('Arquivo de logs criado em ${file.path}');
+      }
 
-      // TODO: Implementar a lógica para enviar o arquivo para o usuário ou processar conforme necessário
+      String logsText = await file.readAsString();
+
+      _logMessage('Logs baixados para ${file.path}');
     } catch (e) {
       _logMessage('Erro ao ler o arquivo de logs: $e');
     }
@@ -351,7 +341,12 @@ Future<void> _downloadLogs() async {
   void dispose() {
     _closePort();
     sendTimer?.cancel();
+    logsFocusNode.dispose();
     super.dispose();
+  }
+
+  void _clearLogsField() {
+    logsController.clear();
   }
 
   @override
@@ -362,13 +357,14 @@ Future<void> _downloadLogs() async {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         actions: [
-        IconButton(
-          icon: Icon(Icons.download),
-          onPressed: () {
-            _downloadLogs();
-          },
-        ),
-      ],
+          IconButton(
+            tooltip: 'Logs',
+            icon: Icon(Icons.download),
+            onPressed: () {
+              _downloadLogs();
+            },
+          )   
+        ],
       ),
       body: Column(
         children: [
@@ -386,6 +382,14 @@ Future<void> _downloadLogs() async {
                         minData.isNotEmpty ? minData.last.timestamp - 10 : null,
                     visibleMaximum:
                         minData.isNotEmpty ? minData.last.timestamp : null,
+                    labelFormat: '{value} s',
+                    interval: 5,
+                    axisLabelFormatter: (AxisLabelRenderDetails args) {
+                      num numericValue = args.value;
+                      String formattedValue =
+                          '${(numericValue % 60).toStringAsFixed(1)} s';
+                      return ChartAxisLabel(formattedValue, TextStyle());
+                    },
                   ),
                   primaryYAxis: NumericAxis(
                     visibleMinimum: _calculateYMin(),
@@ -393,14 +397,15 @@ Future<void> _downloadLogs() async {
                   ),
                   series: <ChartSeries>[
                     LineSeries<ChartData, double>(
+                      color: Colors.blueAccent,
                       dataSource: minData,
                       xValueMapper: (ChartData data, _) => data.timestamp,
                       yValueMapper: (ChartData data, _) => data.value,
                       name: 'Min Data',
                       markerSettings: MarkerSettings(isVisible: true),
                     ),
-                    SplineSeries<ChartData, double>(
-                      splineType: SplineType.cardinal,
+                    LineSeries<ChartData, double>(
+                      color: Colors.red,
                       dataSource: midData,
                       xValueMapper: (ChartData data, _) => data.timestamp,
                       yValueMapper: (ChartData data, _) => data.value,
@@ -408,6 +413,7 @@ Future<void> _downloadLogs() async {
                       markerSettings: MarkerSettings(isVisible: true),
                     ),
                     LineSeries<ChartData, double>(
+                      color: Colors.green,
                       dataSource: maxData,
                       xValueMapper: (ChartData data, _) => data.timestamp,
                       yValueMapper: (ChartData data, _) => data.value,
@@ -437,6 +443,13 @@ Future<void> _downloadLogs() async {
                         minData.isNotEmpty ? minData.last.timestamp - 10 : null,
                     visibleMaximum:
                         minData.isNotEmpty ? minData.last.timestamp : null,
+                    labelFormat: '{value} s',
+                    interval: 5,
+                    axisLabelFormatter: (AxisLabelRenderDetails args) {
+                      String formattedValue =
+                          '${(args.value % 60).toStringAsFixed(1)} s';
+                      return ChartAxisLabel(formattedValue, TextStyle());
+                    },
                   ),
                   primaryYAxis: NumericAxis(
                     visibleMinimum: _calculateYMinIn(),
@@ -444,13 +457,15 @@ Future<void> _downloadLogs() async {
                   ),
                   series: <ChartSeries>[
                     LineSeries<ChartData, double>(
+                      color: Colors.blueAccent,
                       dataSource: inMinData,
                       xValueMapper: (ChartData data, _) => data.timestamp,
                       yValueMapper: (ChartData data, _) => data.value,
                       name: 'In Min Data',
                       markerSettings: MarkerSettings(isVisible: true),
                     ),
-                    SplineSeries<ChartData, double>(
+                    LineSeries<ChartData, double>(
+                      color: Colors.red,
                       dataSource: inMidData,
                       xValueMapper: (ChartData data, _) => data.timestamp,
                       yValueMapper: (ChartData data, _) => data.value,
@@ -458,6 +473,7 @@ Future<void> _downloadLogs() async {
                       markerSettings: MarkerSettings(isVisible: true),
                     ),
                     LineSeries<ChartData, double>(
+                      color: Colors.green,
                       dataSource: inMaxData,
                       xValueMapper: (ChartData data, _) => data.timestamp,
                       yValueMapper: (ChartData data, _) => data.value,
@@ -496,22 +512,46 @@ Future<void> _downloadLogs() async {
                           ),
                           textInputAction: TextInputAction.send,
                           onSubmitted: (value) {
-                            _sendCommand();
+                            if (value == 'clear') {
+                              _clearLogsField();
+                            } else {
+                              _sendCommand();
+                            }
+                            
                           },
                         ),
                         Expanded(
-                          child: SingleChildScrollView(
-                            controller: ScrollController(),
-                            child: TextField(
-                              controller: logsController,
-                              maxLines: null,
-                              enabled: false,
-                              decoration: InputDecoration.collapsed(
-                                hintText: 'Serial Logs',
+                          child: Listener(
+                            onPointerDown: (_) {
+                              logsFocusNode.requestFocus();
+                            },
+                            child: Focus(
+                              focusNode: logsFocusNode,
+                              onKey: (FocusNode node, RawKeyEvent event) {
+                                if (event is RawKeyDownEvent) {
+                                  if (event.isControlPressed &&
+                                      event.logicalKey ==
+                                          LogicalKeyboardKey.keyL) {
+                                    _clearLogsField();
+                                  }
+                                }
+                                return KeyEventResult
+                                    .ignored;
+                              },
+                              child: SingleChildScrollView(
+                                controller: ScrollController(),
+                                child: TextField(
+                                  controller: logsController,
+                                  maxLines: null,
+                                  enabled: false,
+                                  decoration: InputDecoration.collapsed(
+                                    hintText: 'Serial Logs',
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                        )
                       ],
                     ),
                   ),
@@ -662,5 +702,5 @@ class ChartData {
   final double timestamp;
 
   ChartData(this.value)
-      : timestamp = DateTime.now().millisecondsSinceEpoch / 1000.0;
+      : timestamp = (DateTime.now().millisecondsSinceEpoch / 1000);
 }

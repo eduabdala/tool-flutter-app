@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/services/python_service.dart';
 import 'package:flutter_app/components/config_port.dart';
-import 'package:flutter_app/components/popup_menu.dart';
+
 
 class Escp extends StatefulWidget {
   Escp({Key? key}) : super(key: key);
@@ -41,14 +41,7 @@ class _EscpState extends State<Escp> {
               Navigator.pop(context);
             },
           ),
-          actions: [
-            PopupMenu(
-              items: [
-                CustomPopupMenuItem(title: 'Config com', value: 'config com'),
-              ],
-              onSelected: (value) => (MenuConfig()),
-            ),
-          ],
+          
         ),
         body: Center(
           child: Row(
