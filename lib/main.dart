@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/screens/generated_screens/cash_recycler.dart';
 import 'package:flutter_app/screens/generated_screens/printer.dart';
-import 'package:flutter_app/screens/generated_screens/su.dart';
+import 'package:flutter_app/screens/generated_screens/su_chart_app.dart';
 import 'models/json_loader.dart';
 import 'models/screen.dart';
 import 'screens/dynamic_screen.dart';
