@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-
 import '../models/screen.dart';
 import 'dynamic_screen.dart';
+import 'package:flutter_app/components/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class ProductScreen extends StatelessWidget {
   final List<ScreenModel> screens;
@@ -10,11 +11,21 @@ class ProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         title: const Text('Produtos'),
+        actions: [
+          IconButton(
+            icon: Icon(isDarkMode ? Icons.wb_sunny : Icons.nightlight_round),
+            onPressed: () {
+              themeProvider.toggleTheme();
+            },
+          ),
+        ]
       ),
       body: Center(
         child: SingleChildScrollView(

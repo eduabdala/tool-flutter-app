@@ -6,6 +6,8 @@ import 'package:flutter_app/components/serial_handler.dart';
 import 'package:flutter_app/components/custom_chart.dart';
 import 'package:flutter_app/components/csv_logger.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'package:flutter_app/components/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class SuChartApp extends StatefulWidget {
   @override
@@ -44,6 +46,18 @@ class _SerialChartAppState extends State<SuChartApp> {
     _listAvailablePorts();
   }
 
+  @override
+  void dispose() {
+    serialHandler?.closeConnection();
+    sendTimer?.cancel();
+    commandLineCLIController.dispose();
+    logWidgetController.dispose();
+    scrollController.dispose();
+    logsFocusNode.dispose();
+
+    super.dispose();
+  }
+
   void _listAvailablePorts() {
     availablePorts = SerialPort.availablePorts;
     if (availablePorts.isNotEmpty) {
@@ -65,13 +79,13 @@ class _SerialChartAppState extends State<SuChartApp> {
       if (selectedPort != null) {
         serialHandler = SerialHandler(selectedPort!);
         int result = serialHandler!.openConnection();
+        logWidgetController.text += 'Trying to connect to $selectedPort...\n';
         if (result == 0) {
           setState(() {
             isConnected = true;
             logWidgetController.text += 'Connected to $selectedPort\n';
           });
           _getConfig();
-          _getZone();
         } else {
           setState(() {
             logWidgetController.text += 'Failed to connect to $selectedPort\n';
@@ -243,11 +257,15 @@ class _SerialChartAppState extends State<SuChartApp> {
     String bcc = _calculateBCC(commandAsn);
     String command = commandAsn + bcc;
     try {
+      logWidgetController.text += "Getting config...\n";
       String? response = await serialHandler?.sendCommandTerminal(command);
       if (response != null) {
+        response = response.substring(3, 11);
+        logWidgetController.text += "Firwmare Version: $response\n";
         setState(() {
-          firmwareVersion = response.substring(3, 11);
+          firmwareVersion = response;
         });
+        _getZone();
       } else {
         setState(() {
           logWidgetController.text += 'No response\n';
@@ -265,20 +283,30 @@ class _SerialChartAppState extends State<SuChartApp> {
     try {
       String? response = await serialHandler?.sendCommandTerminal(command);
       if (response != null) {
-        String zoneStatus = response.split('|')[0];
-        int activeZones =
-            zoneStatus.split('').where((char) => char == 'A').length;
-        print(activeZones);
-        setState(() {
-          this.activeZones = activeZones;
-        });
+        List<String> parts = response.split('|');
+
+        if (parts.length > 1) {
+          String zoneData = parts[3];
+          int activeZones =
+              zoneData.split('').where((char) => char != 'N').length;
+
+          logWidgetController.text += 'Number of active zones: $activeZones\n';
+          setState(() {
+            this.activeZones = activeZones;
+          });
+        } else {
+          setState(() {
+            logWidgetController.text +=
+                'Unexpected response format: $response.\n';
+          });
+        }
       } else {
         setState(() {
           logWidgetController.text += 'No response\n';
         });
       }
     } catch (e) {
-      logWidgetController.text += 'Error: $e\n';
+      logWidgetController.text += 'Erro: $e\n';
     }
   }
 
@@ -417,6 +445,13 @@ class _SerialChartAppState extends State<SuChartApp> {
     return chartWidgets;
   }
 
+  void _clearLogs() {
+    setState(() {
+      logWidgetController
+          .clear(); // Limpa o conteúdo do campo de texto dos logs
+    });
+  }
+
   void _scrollToEnd() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (scrollController.hasClients) {
@@ -429,12 +464,10 @@ class _SerialChartAppState extends State<SuChartApp> {
     });
   }
 
-  void _clearLogsField() {
-    logWidgetController.clear();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         title: Text('SU Data Chart - $firmwareVersion'),
@@ -442,12 +475,18 @@ class _SerialChartAppState extends State<SuChartApp> {
         foregroundColor: Colors.white,
         actions: [
           IconButton(
+            icon: Icon(isDarkMode ? Icons.wb_sunny : Icons.nightlight_round),
+            onPressed: () {
+              themeProvider.toggleTheme();
+            },
+          ),
+          IconButton(
             tooltip: 'Logs',
             icon: Icon(Icons.download),
             onPressed: () {
               _downloadLogs();
             },
-          )
+          ),
         ],
       ),
       body: Column(
@@ -576,6 +615,7 @@ class _SerialChartAppState extends State<SuChartApp> {
                         logWidgetController.text += "Command not found\n";
                       } else {
                         if (value == 'clear') {
+                          _clearLogs();
                         } else {
                           if (flag == true) {
                             executeCommand();
@@ -602,7 +642,7 @@ class _SerialChartAppState extends State<SuChartApp> {
                           if (event is RawKeyDownEvent) {
                             if (event.isControlPressed &&
                                 event.logicalKey == LogicalKeyboardKey.keyL) {
-                              _clearLogsField();
+                              _clearLogs();
                             }
                           }
                           return KeyEventResult.ignored;
@@ -616,10 +656,7 @@ class _SerialChartAppState extends State<SuChartApp> {
                             decoration: InputDecoration.collapsed(
                               hintText: 'Serial Logs',
                             ),
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontFamily: 'Courier',
-                                fontSize: 14),
+                            style: Theme.of(context).textTheme.bodyLarge,
                           ),
                         ),
                       ),
@@ -632,5 +669,12 @@ class _SerialChartAppState extends State<SuChartApp> {
         ],
       ),
     );
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    super.setState(fn);
+    // Garante que o log será rolado para o final após uma atualização de estado
+    _scrollToEnd();
   }
 }

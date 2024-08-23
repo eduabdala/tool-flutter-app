@@ -97,5 +97,10 @@ class ChartData {
   final double timestamp;
 
   ChartData(this.value)
-      : timestamp = (DateTime.now().millisecondsSinceEpoch / 1000);
+      : timestamp = DateTime.now().millisecondsSinceEpoch / 1000.0;
+
+  @override
+  String toString() {
+    return 'ChartData(value: $value, timestamp: $timestamp)';
+  }
 }

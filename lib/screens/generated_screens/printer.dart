@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/services/python_service.dart';
 import 'package:flutter_app/components/config_port.dart';
-
+import 'package:flutter_app/components/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class Escp extends StatefulWidget {
   Escp({Key? key}) : super(key: key);
@@ -28,6 +29,8 @@ class _EscpState extends State<Escp> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -41,7 +44,14 @@ class _EscpState extends State<Escp> {
               Navigator.pop(context);
             },
           ),
-          
+          actions: [
+          IconButton(
+            icon: Icon(isDarkMode ? Icons.wb_sunny : Icons.nightlight_round),
+            onPressed: () {
+              themeProvider.toggleTheme();
+            },
+          ),
+        ]
         ),
         body: Center(
           child: Row(
