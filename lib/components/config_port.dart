@@ -7,7 +7,6 @@ class ConfigScreen extends StatefulWidget{
   const ConfigScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ConfigScreenState createState() => _ConfigScreenState();
 }
 
@@ -49,7 +48,6 @@ class _ConfigScreenState extends State<ConfigScreen> {
        'baudRate': _baudRate,
      };
      await _writeConfig(config);
-     // ignore: use_build_context_synchronously
      ScaffoldMessenger.of(context).showSnackBar(
          const SnackBar(content: Text('Configuração salva com sucesso!')));
    }
@@ -113,4 +111,3 @@ class _ConfigScreenState extends State<ConfigScreen> {
     );
   }
 }
-

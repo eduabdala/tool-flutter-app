@@ -102,14 +102,12 @@ class _SerialChartAppState extends State<SuChartApp> {
 
       if (await file.exists()) {
         logWidgetController.text += "Log file created in: $filePath\n";
-        // Exibe uma mensagem de sucesso
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Logs downloaded successfully!'),
           ),
         );
       } else {
-        // Exibe uma mensagem de erro se o arquivo não existir
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('No log file found.'),
@@ -117,7 +115,6 @@ class _SerialChartAppState extends State<SuChartApp> {
         );
       }
     } catch (e) {
-      // Exibe uma mensagem de erro se algo der errado
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error downloading logs: $e'),
@@ -448,7 +445,7 @@ class _SerialChartAppState extends State<SuChartApp> {
   void _clearLogs() {
     setState(() {
       logWidgetController
-          .clear(); // Limpa o conteúdo do campo de texto dos logs
+          .clear();
     });
   }
 
@@ -674,7 +671,6 @@ class _SerialChartAppState extends State<SuChartApp> {
   @override
   void setState(VoidCallback fn) {
     super.setState(fn);
-    // Garante que o log será rolado para o final após uma atualização de estado
     _scrollToEnd();
   }
 }

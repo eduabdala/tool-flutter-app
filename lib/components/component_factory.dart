@@ -4,7 +4,6 @@ import 'button.dart';
 import 'text.dart';
 import 'textfield.dart';
 
-
 class ComponentFactory {
   static Widget createComponent(Component component, BuildContext context) {
     switch (component.type) {

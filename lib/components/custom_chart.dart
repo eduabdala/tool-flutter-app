@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-
 class CustomChart extends StatelessWidget {
   final List<ChartData> minData;
   final List<ChartData> midData;

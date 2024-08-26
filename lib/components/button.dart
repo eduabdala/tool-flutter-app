@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../models/component.dart';
 import '../services/python_service.dart';
 
-
 class ButtonComponent extends StatelessWidget {
   final Component? component;
   final String? label;
@@ -10,7 +9,6 @@ class ButtonComponent extends StatelessWidget {
   final String? pythonScriptPath;
   final String? pythonFunction;
   final String? pythonArg;
-
 
   const ButtonComponent({
     super.key, 

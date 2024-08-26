@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ThemeProvider extends ChangeNotifier {
-  // Definindo os temas claro e escuro como finais e constantes
   final ThemeData _lightTheme = ThemeData(
     brightness: Brightness.light,
     primaryColor: Colors.blue,
@@ -26,10 +25,9 @@ class ThemeProvider extends ChangeNotifier {
     ),
   );
 
-  // Define o tema atual como claro por padrão
   ThemeData _currentTheme;
 
-  ThemeProvider() : _currentTheme = ThemeData.light(); // Inicializa com o tema claro
+  ThemeProvider() : _currentTheme = ThemeData.light(); 
 
   ThemeData get currentTheme => _currentTheme;
 
