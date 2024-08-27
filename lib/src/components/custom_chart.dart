@@ -13,7 +13,6 @@ class CustomChart extends StatelessWidget {
   final Color maxDataColor;
   final double? Function() calculateYMin;
   final double? Function() calculateYMax;
-  final bool isPdMode;
 
   CustomChart({
     required this.minData,
@@ -26,8 +25,7 @@ class CustomChart extends StatelessWidget {
     this.midDataColor = Colors.red,
     this.maxDataColor = Colors.green,
     required this.calculateYMin,
-    required this.calculateYMax,
-    this.isPdMode = false,
+    required this.calculateYMax, 
   });
 
   @override

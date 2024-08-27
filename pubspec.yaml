@@ -63,9 +63,9 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets: 
-    - lib/assets/screens_json/
-    - lib/services/thermal_printer/
-    - lib/services/cashRecycler/commands.py
+    - lib/src/assets/screens_json/
+    - lib/src/services/thermal_printer/
+    - lib/src/services/cashRecycler/commands.py
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

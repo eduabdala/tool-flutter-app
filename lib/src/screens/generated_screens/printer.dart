@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/services/python_service.dart';
-import 'package:flutter_app/components/config_port.dart';
-import 'package:flutter_app/components/theme_provider.dart';
+import '../../services/python_service.dart';
+import 'package:flutter_app/src/components/config_port.dart';
+import 'package:flutter_app/src/components/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class Escp extends StatefulWidget {

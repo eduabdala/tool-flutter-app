@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/component.dart';
-import '../services/python_service.dart';
+import '..../../../services/python_service.dart';
 
 class ButtonComponent extends StatelessWidget {
   final Component? component;

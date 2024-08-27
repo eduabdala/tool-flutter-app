@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/screen.dart';
 import 'dynamic_screen.dart';
-import 'package:flutter_app/components/theme_provider.dart';
+import 'package:flutter_app/src/components/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProductScreen extends StatelessWidget {

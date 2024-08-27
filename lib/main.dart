@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/screens/generated_screens/cash_recycler.dart';
-import 'package:flutter_app/screens/generated_screens/printer.dart';
-import 'package:flutter_app/screens/generated_screens/su_chart_app.dart';
-import 'models/json_loader.dart';
-import 'models/screen.dart';
-import 'screens/dynamic_screen.dart';
-import 'screens/product_screen.dart';
+import 'package:flutter_app/src/screens/generated_screens/cash_recycler.dart';
+import 'package:flutter_app/src/screens/generated_screens/printer.dart';
+import 'package:flutter_app/src/screens/generated_screens/su_chart_app.dart';
+import 'src/models/json_loader.dart';
+import 'src/models/screen.dart';
+import 'src/screens/dynamic_screen.dart';
+import 'src/screens/product_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_app/components/theme_provider.dart';
+import 'package:flutter_app/src/components/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

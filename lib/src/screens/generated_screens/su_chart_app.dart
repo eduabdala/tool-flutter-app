@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app/components/serial_handler.dart';
-import 'package:flutter_app/components/custom_chart.dart';
-import 'package:flutter_app/components/csv_logger.dart';
+import 'package:flutter_app/src/components/serial_handler.dart';
+import 'package:flutter_app/src/components/custom_chart.dart';
+import 'package:flutter_app/src/components/csv_logger.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
-import 'package:flutter_app/components/theme_provider.dart';
+import 'package:flutter_app/src/components/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class SuChartApp extends StatefulWidget {
@@ -198,7 +198,6 @@ class _SerialChartAppState extends State<SuChartApp> {
       });
       return;
     }
-
     if (isPdMode) {
       String commandAsn = "\x02" + commandLineCLIController.text + "\x03";
       String bcc = _calculateBCC(commandAsn);
@@ -206,17 +205,13 @@ class _SerialChartAppState extends State<SuChartApp> {
     } else {
       command = commandLineCLIController.text + "\n";
     }
-
     setState(() {
       logWidgetController.text += 'Sending: $command\n';
     });
-
     setState(() {
       isProcessingCommand = true;
     });
-
     String? response = await serialHandler?.sendCommandTerminal(command);
-
     if (response != null) {
       setState(() {
         logWidgetController.text += 'Received: $response\n';
@@ -226,7 +221,6 @@ class _SerialChartAppState extends State<SuChartApp> {
         logWidgetController.text += 'No response\n';
       });
     }
-
     setState(() {
       isProcessingCommand = false;
       commandLineCLIController.clear();
@@ -415,7 +409,6 @@ class _SerialChartAppState extends State<SuChartApp> {
           maxData: maxData,
           calculateYMin: _calculateYMin,
           calculateYMax: _calculateYMax,
-          isPdMode: isPdMode,
         ),
       ),
     );
@@ -430,7 +423,6 @@ class _SerialChartAppState extends State<SuChartApp> {
               maxData: inMaxData,
               calculateYMin: _calculateYMinIn,
               calculateYMax: _calculateYMaxIn,
-              isPdMode: isPdMode,
             ),
           ),
         );
@@ -549,34 +541,35 @@ class _SerialChartAppState extends State<SuChartApp> {
                     Text("Timer Interval (ms):"),
                     SizedBox(height: 5),
                     SizedBox(
-                      width: 200, // Ajuste o tamanho conforme necessário
+                      width: 200, 
                       child: Slider(
                         value: timerInterval,
-                        min: 100.0,
-                        max: 1000.0,
-                        divisions: 9,
+                        min: 300.0,
+                        max: 2000.0,
+                        divisions: 17,
                         label: '${timerInterval.toInt()} ms',
                         onChanged: (value) {
                           setState(() {
                             timerInterval = value;
                             _updateTimerInterval(timerInterval);
+                            
                           });
                         },
                       ),
                     ),
                   ],
                 ),
-                SizedBox(width: 20), // Espaço entre sliders
+                SizedBox(width: 20), 
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text("Time Window (samples):"),
                   SizedBox(height: 5),
                   SizedBox(
-                    width: 200, // Ajuste o tamanho conforme necessário
+                    width: 200,
                     child: Slider(
                       value: timeWindow,
-                      min: 10.0,
+                      min: 20.0,
                       max: 100.0,
-                      divisions: 9,
+                      divisions: 8,
                       label: '${timeWindow.toInt()} samples',
                       onChanged: (value) {
                         setState(() {
@@ -608,9 +601,6 @@ class _SerialChartAppState extends State<SuChartApp> {
                       labelText: 'Enter command',
                     ),
                     onSubmitted: (value) {
-                      if (value == "") {
-                        logWidgetController.text += "Command not found\n";
-                      } else {
                         if (value == 'clear') {
                           _clearLogs();
                         } else {
@@ -620,12 +610,10 @@ class _SerialChartAppState extends State<SuChartApp> {
                                 isRunning == false) {
                               _toggleGraph();
                             }
-                            print('0');
                           } else {
                             executeCommand();
                           }
                         }
-                      }
                     },
                   ),
                   Expanded(

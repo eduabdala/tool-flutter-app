@@ -35,7 +35,7 @@ class SerialHandler {
       List<int> responseBytes = [];
       while (ser!.bytesAvailable > 0) {
         final response = ser!.read(ser!.bytesAvailable);
-        if (response != null && response.isNotEmpty) {
+        if (response.isNotEmpty) {
           responseBytes.addAll(response);
         }
       }
@@ -54,7 +54,7 @@ class SerialHandler {
     if (ser != null && ser!.isOpen) {
       ser!.write(Uint8List.fromList(utf8.encode(command)));
       await Future.delayed(Duration(milliseconds: 500));
-      final response = ser!.read(ser!.bytesAvailable)!;
+      final response = ser!.read(ser!.bytesAvailable);
       ser!.flush();
       return utf8.decode(response);
     }
