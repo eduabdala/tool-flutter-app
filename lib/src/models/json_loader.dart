@@ -7,7 +7,7 @@ Future<List<ScreenModel>> loadScreens() async {
   final Map<String, dynamic> manifestMap = json.decode(manifestContent);
 
   final screenFiles = manifestMap.keys
-      .where((String key) => key.contains('lib/assets/screens_json/') && key.endsWith('.json'))
+      .where((String key) => key.contains('lib/src/assets/screens_json/') && key.endsWith('.json'))
       .toList();
 
   List<ScreenModel> screens = [];
