@@ -1,7 +1,7 @@
 {
-  "classe": "Product type",
+  "class": "Product type",
   "productName": "Product name",
-  "baudeRate": "",
+  "baudRate": "",
   "COM": "",
   "pythonPath": "",
   "screen": {

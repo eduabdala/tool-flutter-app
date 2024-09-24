@@ -1,19 +1,52 @@
+/***********************************************************************
+ * $Id$        custom_chart.dart             2024-09-24
+ *//**
+ * @file        custom_chart.dart
+ * @brief       A widget for displaying a custom line chart
+ * @version     1.0
+ * @date        24. Sep. 2024
+ * @author      Eduardo Abdala
+ *************************************************************************/
+/// @addtogroup  CustomChart Custom Chart Widget
+/// @{
+library;
+
+
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+/// @brief A widget that represents a custom line chart
+/// 
+/// This widget displays three sets of line data (min, mid, max) 
+/// and allows for zooming and panning interactions.
 class CustomChart extends StatelessWidget {
-  final List<ChartData> minData;
-  final List<ChartData> midData;
-  final List<ChartData> maxData;
-  final String minDataName;
-  final String midDataName;
-  final String maxDataName;
-  final Color minDataColor;
-  final Color midDataColor;
-  final Color maxDataColor;
-  final double? Function() calculateYMin;
-  final double? Function() calculateYMax;
+  final List<ChartData> minData; ///< Data points for minimum values
+  final List<ChartData> midData; ///< Data points for mid-range values
+  final List<ChartData> maxData; ///< Data points for maximum values
+  final String minDataName; ///< Label for the minimum data series
+  final String midDataName; ///< Label for the mid data series
+  final String maxDataName; ///< Label for the maximum data series
+  final Color minDataColor; ///< Color for the minimum data series
+  final Color midDataColor; ///< Color for the mid data series
+  final Color maxDataColor; ///< Color for the maximum data series
+  final double? Function() calculateYMin; ///< Function to calculate minimum Y-axis value
+  final double? Function() calculateYMax; ///< Function to calculate maximum Y-axis value
 
+  /// @brief Constructor for CustomChart
+  /// 
+  /// Initializes the chart with the provided data and visual configurations.
+  /// 
+  /// @param minData List of ChartData for the minimum values
+  /// @param midData List of ChartData for the mid-range values
+  /// @param maxData List of ChartData for the maximum values
+  /// @param minDataName Name for the minimum data series
+  /// @param midDataName Name for the mid-range data series
+  /// @param maxDataName Name for the maximum data series
+  /// @param minDataColor Color for the minimum data series
+  /// @param midDataColor Color for the mid-range data series
+  /// @param maxDataColor Color for the maximum data series
+  /// @param calculateYMin Function to determine the minimum Y-axis value
+  /// @param calculateYMax Function to determine the maximum Y-axis value
   CustomChart({
     required this.minData,
     required this.midData,
@@ -25,9 +58,16 @@ class CustomChart extends StatelessWidget {
     this.midDataColor = Colors.red,
     this.maxDataColor = Colors.green,
     required this.calculateYMin,
-    required this.calculateYMax, 
+    required this.calculateYMax,
   });
 
+  /// @brief Builds the line chart widget
+  /// 
+  /// This method constructs the SfCartesianChart with the defined 
+  /// data series, axes configurations, and interactive behaviors.
+  /// 
+  /// @param context The build context for the widget
+  /// @return Widget Returns the SfCartesianChart widget
   @override
   Widget build(BuildContext context) {
     return SfCartesianChart(
@@ -89,10 +129,18 @@ class CustomChart extends StatelessWidget {
   }
 }
 
+/// @brief A class representing data points for the chart
+/// 
+/// This class contains a value and a timestamp for each data point.
 class ChartData {
-  final double value;
-  final double timestamp;
+  final double value; ///< The value of the data point
+  final double timestamp; ///< The timestamp of the data point
 
+  /// @brief Constructor for ChartData
+  /// 
+  /// Initializes a ChartData instance with a value and the current timestamp.
+  /// 
+  /// @param value The value for this data point
   ChartData(this.value)
       : timestamp = DateTime.now().millisecondsSinceEpoch / 1000.0;
 
@@ -101,3 +149,4 @@ class ChartData {
     return 'ChartData(value: $value, timestamp: $timestamp)';
   }
 }
+/** @} */

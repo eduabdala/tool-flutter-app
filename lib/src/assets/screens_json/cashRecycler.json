@@ -2,7 +2,7 @@
   "id": "cashRecycler",
   "title": "Cash Recycler",
   "class": "Cash Recycler",
-  "modelo": "modelo1",
+  "model": "model1",
   "components": [
     {
       "type": "button",

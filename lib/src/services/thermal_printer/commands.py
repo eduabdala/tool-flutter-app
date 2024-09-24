@@ -408,42 +408,37 @@ def cmd_define_avanco_papel(xpto):
     cmd = b'\x1b\x4a' + n
     ser.write(cmd)
 
+def default_case(funcao):
+    return(f"Function '{funcao}' is not recognized.")
+
+switch_case = {
+    'Print': lambda texto: pipeline_cmd_digitar(texto),
+    'Cut': lambda texto: pipeline_cmd_guilhotina(),
+    'Italic': lambda texto: pipeline_cmd_italico(),
+    'QRCode': lambda texto: cmd_qr_code(texto, 'pequeno'),
+    'Bold': lambda texto: pipeline_cmd_enfatizado(),
+    'Expandido': lambda texto: pipeline_cmd_expandido(),
+    'Condensado': lambda texto: pipeline_cmd_condensado(),
+    'Normal': lambda texto: cmd_reset(),
+}
+
+def execute_function(funcao, texto=None):
+    switch_case.get(funcao, lambda texto: default_case(funcao))(texto)
+
 def main(arg1, arg2):
-    if len(sys.argv)<1:
-        print("forneça o nome da funçao como argumento.")
-        return
     funcao = arg1
     texto = arg2
-    if funcao == 'Print':
-        pipeline_cmd_digitar(texto)
-    elif funcao == 'Cut':
-        pipeline_cmd_guilhotina()
-        print('ok')
-    elif funcao == 'Italic':
-        pipeline_cmd_italico()
-    elif funcao == 'QRCode':
-        cmd_qr_code(texto,'pequeno')
-    elif funcao == 'Bold':
-        pipeline_cmd_enfatizado()
-    elif funcao == 'Expandido':
-        pipeline_cmd_expandido()
-    elif funcao == 'Condensado':
-        pipeline_cmd_condensado()
-    elif funcao == 'Normal':
-        cmd_reset()
-    else:
-        print(f"funcao {funcao} nao reconhecida.")
-
+    execute_function(funcao, texto)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Chamar minha funcao com argumentos")
     parser.add_argument("arg1", type=str, help="Primeiro argumento")
     parser.add_argument("arg2", type=str, help="Segundo argumento")
     args = parser.parse_args()
+
     with open('serial_config.json') as f:
         config = json.load(f)
 
     ser = serial.Serial(config['port'], int(config['baudRate']))
 
     main(args.arg1, args.arg2)
-

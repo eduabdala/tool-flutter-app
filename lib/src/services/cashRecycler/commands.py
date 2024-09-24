@@ -44,9 +44,6 @@ def derive_key(hw_id, original_key):
     except Exception as e:
         messagebox.showerror("Error", str(e))
 
-
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Chamar minha funcao com argumentos")
     parser.add_argument("arg1", type=str, help="Primeiro argumento")
