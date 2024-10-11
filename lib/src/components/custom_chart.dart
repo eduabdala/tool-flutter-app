@@ -20,15 +20,19 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 /// This widget displays three sets of line data (min, mid, max) 
 /// and allows for zooming and panning interactions.
 class CustomChart extends StatelessWidget {
+  final String zoneName;
   final List<ChartData> minData; ///< Data points for minimum values
   final List<ChartData> midData; ///< Data points for mid-range values
   final List<ChartData> maxData; ///< Data points for maximum values
+  final List<ChartData> extData; ///< Data points for extra values
   final String minDataName; ///< Label for the minimum data series
   final String midDataName; ///< Label for the mid data series
   final String maxDataName; ///< Label for the maximum data series
+  final String extDataName; ///< Label for the extra data series
   final Color minDataColor; ///< Color for the minimum data series
   final Color midDataColor; ///< Color for the mid data series
   final Color maxDataColor; ///< Color for the maximum data series
+  final Color extDataColor; ///< Color for the extra data series
   final double? Function() calculateYMin; ///< Function to calculate minimum Y-axis value
   final double? Function() calculateYMax; ///< Function to calculate maximum Y-axis value
 
@@ -48,15 +52,19 @@ class CustomChart extends StatelessWidget {
   /// @param calculateYMin Function to determine the minimum Y-axis value
   /// @param calculateYMax Function to determine the maximum Y-axis value
   CustomChart({
+    required this.zoneName,
     required this.minData,
     required this.midData,
     required this.maxData,
+    required this.extData,
     this.minDataName = 'Min Data',
     this.midDataName = 'Mid Data',
     this.maxDataName = 'Max Data',
+    this.extDataName = 'Ext Data',
     this.minDataColor = Colors.blueAccent,
     this.midDataColor = Colors.red,
     this.maxDataColor = Colors.green,
+    this.extDataColor = Colors.orange,
     required this.calculateYMin,
     required this.calculateYMax,
   });
@@ -71,6 +79,7 @@ class CustomChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SfCartesianChart(
+      title: ChartTitle(text: zoneName),
       legend: Legend(
         isVisible: true,
         position: LegendPosition.top,
@@ -109,6 +118,14 @@ class CustomChart extends StatelessWidget {
           markerSettings: MarkerSettings(isVisible: true),
         ),
         LineSeries<ChartData, double>(
+          color: extDataColor,
+          dataSource: extData,
+          xValueMapper: (ChartData data, _) => data.timestamp,
+          yValueMapper: (ChartData data, _) => data.value,
+          name: extDataName,
+          markerSettings: MarkerSettings(isVisible: true),
+        ),
+        LineSeries<ChartData, double>(
           color: maxDataColor,
           dataSource: maxData,
           xValueMapper: (ChartData data, _) => data.timestamp,
@@ -122,6 +139,7 @@ class CustomChart extends StatelessWidget {
         enableDoubleTapZooming: true,
         enablePanning: true,
       ),
+      
       tooltipBehavior: TooltipBehavior(
         enable: true,
       ),
@@ -142,11 +160,12 @@ class ChartData {
   /// 
   /// @param value The value for this data point
   ChartData(this.value)
-      : timestamp = DateTime.now().millisecondsSinceEpoch / 1000.0;
+      : timestamp = DateTime.now().millisecondsSinceEpoch / 1000.0 ;
 
   @override
   String toString() {
     return 'ChartData(value: $value, timestamp: $timestamp)';
   }
 }
+
 /** @} */

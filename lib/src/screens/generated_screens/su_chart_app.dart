@@ -18,15 +18,18 @@ class _SerialChartAppState extends State<SuChartApp> {
   List<ChartData> minData = [];
   List<ChartData> midData = [];
   List<ChartData> maxData = [];
+  List<ChartData> extData = [];
   List<ChartData> inMinData = [];
   List<ChartData> inMidData = [];
   List<ChartData> inMaxData = [];
+  List<ChartData> inExtData = [];
   SerialHandler? serialHandler;
   TextEditingController commandLineCLIController = TextEditingController();
   TextEditingController logWidgetController = TextEditingController();
   final ScrollController scrollController = ScrollController();
   FocusNode logsFocusNode = FocusNode();
   int activeZones = 2;
+  String nameZone = 'Unknown';
   String? selectedPort;
   List<String> availablePorts = [];
   bool isPdMode = true;
@@ -123,25 +126,27 @@ class _SerialChartAppState extends State<SuChartApp> {
     }
   }
 
-  void _toggleGraph() {
-    if (isRunning) {
-      String command = 'status csv *\n';
+void _toggleGraph() {
+  if (isRunning) {
+    String command = 'status csv *\n';
+    setState(() {
+      flag = true;
+      isRunning = false;
+    });
+
+    if (!isConnected) {
       setState(() {
-        flag = true;
-        isRunning = false;
+        logWidgetController.text += 'No connection established\n';
       });
+      return;
+    }
 
-      if (isConnected == false) {
-        setState(() {
-          logWidgetController.text += 'No connection established\n';
-        });
-        return;
-      }
 
-      sendTimer = Timer.periodic(Duration(milliseconds: timerInterval.toInt()),
-          (timer) async {
-        if (!isProcessingCommand) {
-          try {
+    sendTimer?.cancel();
+    sendTimer = Timer.periodic(Duration(milliseconds: timerInterval.toInt()), (sendTmer) async {
+      if (!isProcessingCommand) {
+        try {
+          if (serialHandler != null) {
             String? response = await serialHandler?.sendCommandGraph(command);
 
             if (response != null && response.isNotEmpty) {
@@ -149,25 +154,29 @@ class _SerialChartAppState extends State<SuChartApp> {
               await _csvLogger.appendData(response);
             } else {
               setState(() {
-                logWidgetController.text +=
-                    'No response received or response is empty.\n';
+                logWidgetController.text += 'No response received or response is empty.\n';
               });
             }
-          } catch (e) {
+          } else {
             setState(() {
-              logWidgetController.text += 'Error sending command: $e\n';
+              logWidgetController.text += 'Serial handler is null.\n';
             });
           }
+        } catch (e) {
+          setState(() {
+            logWidgetController.text += 'Error sending command: $e\n';
+          });
         }
-      });
-    } else {
-      sendTimer?.cancel();
-      setState(() {
-        flag = false;
-        isRunning = true;
-      });
-    }
+      }
+    });
+  } else {
+    sendTimer?.cancel();
+    setState(() {
+      flag = false;
+      isRunning = true;
+    });
   }
+}
 
   void _toggleCmdMode() {
     if (isPdMode) {
@@ -308,6 +317,7 @@ class _SerialChartAppState extends State<SuChartApp> {
         minData.add(ChartData(double.parse(parts[6])));
         midData.add(ChartData(double.parse(parts[7])));
         maxData.add(ChartData(double.parse(parts[8])));
+        extData.add(ChartData(double.parse(parts[9])));
         inMinData.add(ChartData(double.parse(parts[12])));
         inMidData.add(ChartData(double.parse(parts[13])));
         inMaxData.add(ChartData(double.parse(parts[14])));
@@ -316,6 +326,7 @@ class _SerialChartAppState extends State<SuChartApp> {
       _trimExcessData(minData, maxDataPoints);
       _trimExcessData(midData, maxDataPoints);
       _trimExcessData(maxData, maxDataPoints);
+      _trimExcessData(extData, maxDataPoints);
       _trimExcessData(inMinData, maxDataPoints);
       _trimExcessData(inMidData, maxDataPoints);
       _trimExcessData(inMaxData, maxDataPoints);
@@ -325,6 +336,7 @@ class _SerialChartAppState extends State<SuChartApp> {
           minData.removeRange(0, minData.length - 50);
           midData.removeRange(0, midData.length - 50);
           maxData.removeRange(0, maxData.length - 50);
+          extData.removeRange(0, extData.length - 50);
         });
       }
     }
@@ -342,7 +354,8 @@ class _SerialChartAppState extends State<SuChartApp> {
     List<double> allValues = [
       ...minData.map((data) => data.value),
       ...midData.map((data) => data.value),
-      ...maxData.map((data) => data.value)
+      ...maxData.map((data) => data.value),
+      ...extData.map((data) => data.value)
     ];
 
     if (allValues.isEmpty) return null;
@@ -357,7 +370,8 @@ class _SerialChartAppState extends State<SuChartApp> {
     List<double> allValues = [
       ...minData.map((data) => data.value),
       ...midData.map((data) => data.value),
-      ...maxData.map((data) => data.value)
+      ...maxData.map((data) => data.value),
+      ...extData.map((data) => data.value)
     ];
 
     if (allValues.isEmpty) return null;
@@ -372,7 +386,8 @@ class _SerialChartAppState extends State<SuChartApp> {
     List<double> allValues = [
       ...inMinData.map((data) => data.value),
       ...inMidData.map((data) => data.value),
-      ...inMaxData.map((data) => data.value)
+      ...inMaxData.map((data) => data.value),
+      ...extData.map((data) => data.value),
     ];
 
     if (allValues.isEmpty) return null;
@@ -387,7 +402,7 @@ class _SerialChartAppState extends State<SuChartApp> {
     List<double> allValues = [
       ...inMinData.map((data) => data.value),
       ...inMidData.map((data) => data.value),
-      ...inMaxData.map((data) => data.value)
+      ...inMaxData.map((data) => data.value),
     ];
 
     if (allValues.isEmpty) return null;
@@ -404,9 +419,11 @@ class _SerialChartAppState extends State<SuChartApp> {
     chartWidgets.add(
       Expanded(
         child: CustomChart(
+          zoneName: '1° Zone',
           minData: minData,
           midData: midData,
           maxData: maxData,
+          extData: extData,
           calculateYMin: _calculateYMin,
           calculateYMax: _calculateYMax,
         ),
@@ -418,9 +435,11 @@ class _SerialChartAppState extends State<SuChartApp> {
         chartWidgets.add(
           Expanded(
             child: CustomChart(
+              zoneName: '2° Zone',
               minData: inMinData,
               midData: inMidData,
               maxData: inMaxData,
+              extData: inExtData,
               calculateYMin: _calculateYMinIn,
               calculateYMax: _calculateYMaxIn,
             ),
@@ -436,8 +455,7 @@ class _SerialChartAppState extends State<SuChartApp> {
 
   void _clearLogs() {
     setState(() {
-      logWidgetController
-          .clear();
+      logWidgetController.clear();
     });
   }
 
@@ -541,7 +559,7 @@ class _SerialChartAppState extends State<SuChartApp> {
                     Text("Timer Interval (ms):"),
                     SizedBox(height: 5),
                     SizedBox(
-                      width: 200, 
+                      width: 200,
                       child: Slider(
                         value: timerInterval,
                         min: 300.0,
@@ -552,14 +570,13 @@ class _SerialChartAppState extends State<SuChartApp> {
                           setState(() {
                             timerInterval = value;
                             _updateTimerInterval(timerInterval);
-                            
                           });
                         },
                       ),
                     ),
                   ],
                 ),
-                SizedBox(width: 20), 
+                SizedBox(width: 20),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text("Time Window (samples):"),
                   SizedBox(height: 5),
@@ -601,19 +618,19 @@ class _SerialChartAppState extends State<SuChartApp> {
                       labelText: 'Enter command',
                     ),
                     onSubmitted: (value) {
-                        if (value == 'clear') {
-                          _clearLogs();
-                        } else {
-                          if (flag == true) {
-                            executeCommand();
-                            if (isProcessingCommand == false &&
-                                isRunning == false) {
-                              _toggleGraph();
-                            }
-                          } else {
-                            executeCommand();
+                      if (value == 'clear') {
+                        _clearLogs();
+                      } else {
+                        if (flag == true) {
+                          executeCommand();
+                          if (isProcessingCommand == false &&
+                              isRunning == false) {
+                            _toggleGraph();
                           }
+                        } else {
+                          executeCommand();
                         }
+                      }
                     },
                   ),
                   Expanded(

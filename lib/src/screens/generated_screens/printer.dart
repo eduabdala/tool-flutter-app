@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/python_service.dart';
-import 'package:flutter_app/src/components/config_port.dart';
+import 'package:flutter_app/src/components/config_screen.dart';
 import 'package:flutter_app/src/components/theme_provider.dart';
 import 'package:provider/provider.dart';
 

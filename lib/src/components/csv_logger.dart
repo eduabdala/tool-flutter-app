@@ -28,7 +28,7 @@ class CsvLogger {
   /// @return Future<String> The path to the log file
   Future<String> _getFilePath() async {
     final directory = await getApplicationDocumentsDirectory(); ///< Gets the application's documents directory
-    final filePath = '${directory.path}/status_log.txt'; ///< Constructs the file path
+    final filePath = '${directory.path}\\status_log.txt'; ///< Constructs the file path
     return filePath;
   }
 
