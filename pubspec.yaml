@@ -1,4 +1,4 @@
-name: perto_printer
+name: flutter_app
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -33,12 +33,19 @@ dependencies:
   flython: ^0.2.0
   http: ^0.13.5
   process_run: ^0.14.2
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   json_annotation: ^4.0.1
   json_serializable: ^4.1.0
-  flutter_libserialport: ^0.2.0
+  flutter_libserialport: ^0.4.0
+  ffi: ^2.1.2
+  win32: ^5.5.1
+  path_provider: ^2.0.13
+  syncfusion_flutter_charts: ^20.1.58
+  intl: ^0.17.0
+  flutter_bloc: ^8.0.1
+  flutter_pty: ^0.4.0
+  fl_chart: ^0.68.0
+  usb_serial: ^0.2.0 
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +63,10 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  assets: 
+    - lib/src/assets/screens_json/
+    - lib/src/services/thermal_printer/
+    - lib/src/services/cashRecycler/commands.py
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

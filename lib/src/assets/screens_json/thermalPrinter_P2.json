@@ -1,0 +1,12 @@
+{
+  "id": "tela2",
+  "title": "Thermal Printer P2",
+  "class": "Thermal Printer",
+  "components": [
+    {
+      "type": "button",
+      "content": {"label": "Commands"},
+      "action": {"type": "navigate", "target": "printer"}
+    }
+  ]
+}

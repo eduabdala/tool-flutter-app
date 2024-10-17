@@ -1,0 +1,17 @@
+{
+  "id": "tela1",
+  "title": "Antiskimming SU",
+  "class": "Antiskimming",
+  "components": [
+    {
+      "type": "text",
+      "content": {"text": "Antiskimming - SU"},
+      "style": {"fontSize": 24}
+    },
+    {
+      "type": "button",
+      "content": {"label": "Status CSV"},
+      "action": {"type": "navigate", "target": "antiskimmingSu"}
+    }
+  ]
+}

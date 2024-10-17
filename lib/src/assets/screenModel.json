@@ -1,0 +1,41 @@
+{
+  "class": "Product type",
+  "productName": "Product name",
+  "baudRate": "",
+  "COM": "",
+  "pythonPath": "",
+  "screen": {
+    "containerTypeAppBar": {
+      "config": "",
+      "style": "",
+      "widget": []
+    },
+    "containerTypeBody": {
+      "config": "Row",
+      "style": "default",
+      "type": "row",
+      "widget": [
+        {
+          "type": "TextBox",
+          "label": "",
+          "function": ""
+        }
+      ],
+      "child": {
+        "type": "column",
+        "widget": [
+          {
+            "type": "ButtonDefault",
+            "label": "button",
+            "function": "functionPy()"
+          },
+          {
+            "type": "ButtonDefault",
+            "label": "button",
+            "function": "functionPy()"
+          }
+        ]
+      }
+    }
+  }
+}
