@@ -1,0 +1,482 @@
+  import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../core/data/chart_data.dart';
+import 'chart_data_event.dart';
+import 'chart_data_state.dart';
+
+void _toggleConnection() {
+    if (isConnected) {
+      serialHandler?.closeConnection();
+      setState(() {
+        isConnected = false;
+        logWidgetController.text += 'Disconnected\n';
+        firmwareVersion = "Unknown";
+      });
+    } else {
+      if (selectedPort != null) {
+        serialHandler = SerialHandler(selectedPort!);
+        int result = serialHandler!.openConnection();
+        logWidgetController.text += 'Trying to connect to $selectedPort...\n';
+        if (result == 0) {
+          setState(() {
+            isConnected = true;
+            logWidgetController.text += 'Connected to $selectedPort\n';
+          });
+          _getConfig();
+        } else {
+          setState(() {
+            logWidgetController.text += 'Failed to connect to $selectedPort\n';
+          });
+        }
+      }
+    }
+  }
+
+
+  void _toggleGraph() {
+    if (isRunning) {
+      String command = 'status csv *\n';
+      setState(() {
+        flag = true;
+        isRunning = false;
+      });
+
+      if (isConnected == false) {
+        setState(() {
+          logWidgetController.text += 'No connection established\n';
+        });
+        return;
+      }
+
+      sendTimer = Timer.periodic(Duration(milliseconds: timerInterval.toInt()),
+          (timer) async {
+        if (!isProcessingCommand) {
+          try {
+            String? response = await serialHandler?.sendCommandGraph(command);
+
+            if (response != null && response.isNotEmpty) {
+              _updateChartData(response);
+              await _csvLogger.appendData(response);
+            } else {
+              setState(() {
+                logWidgetController.text +=
+                    'No response received or response is empty.\n';
+              });
+            }
+          } catch (e) {
+            setState(() {
+              logWidgetController.text += 'Error sending command: $e\n';
+            });
+          }
+        }
+      });
+    } else {
+      sendTimer?.cancel();
+      setState(() {
+        flag = false;
+        isRunning = true;
+      });
+    }
+  }
+
+  void _toggleCmdMode() {
+    if (isPdMode) {
+      setState(() {
+        isPdMode = false;
+      });
+    } else {
+      setState(() {
+        isPdMode = true;
+      });
+    }
+  }
+
+  void executeCommand() async {
+    String command;
+
+    if (serialHandler == null) {
+      setState(() {
+        logWidgetController.text += 'No connection established\n';
+      });
+      return;
+    }
+
+    if (isPdMode) {
+      String commandAsn = "\x02" + commandLineCLIController.text + "\x03";
+      String bcc = _calculateBCC(commandAsn);
+      command = commandAsn + bcc;
+    } else {
+      command = commandLineCLIController.text + "\n";
+    }
+
+    setState(() {
+      logWidgetController.text += 'Sending: $command\n';
+    });
+
+    setState(() {
+      isProcessingCommand = true;
+    });
+
+    String? response = await serialHandler?.sendCommandTerminal(command);
+
+    if (response != null) {
+      setState(() {
+        logWidgetController.text += 'Received: $response\n';
+      });
+    } else {
+      setState(() {
+        logWidgetController.text += 'No response\n';
+      });
+    }
+
+    setState(() {
+      isProcessingCommand = false;
+      commandLineCLIController.clear();
+    });
+  }
+
+  void _updateTimerInterval(double intervalMs) {
+    if (sendTimer != null) {
+      sendTimer?.cancel();
+    }
+
+    setState(() {
+      timerInterval = intervalMs;
+    });
+  }
+
+  void _updateTimeWindow(double newWindowSize) {
+    setState(() {
+      timeWindow = newWindowSize;
+    });
+  }
+
+  Future<void> _getConfig() async {
+    String commandAsn = "\x02" + "V" + "\x03";
+    String bcc = _calculateBCC(commandAsn);
+    String command = commandAsn + bcc;
+    try {
+      logWidgetController.text += "Getting config...\n";
+      String? response = await serialHandler?.sendCommandTerminal(command);
+      if (response != null) {
+        response = response.substring(3, 11);
+        logWidgetController.text += "Firwmare Version: $response\n";
+        setState(() {
+          firmwareVersion = response;
+        });
+        _getZone();
+      } else {
+        setState(() {
+          logWidgetController.text += 'No response\n';
+        });
+      }
+    } catch (e) {
+      logWidgetController.text += 'Error: $e\n';
+    }
+  }
+
+  Future<void> _getZone() async {
+    String commandAsn = "\x02" + "S" + "\x03";
+    String bcc = _calculateBCC(commandAsn);
+    String command = commandAsn + bcc;
+    try {
+      String? response = await serialHandler?.sendCommandTerminal(command);
+      if (response != null) {
+        List<String> parts = response.split('|');
+        
+        if (parts.length > 1) {
+          String zoneData = parts[3];
+          int activeZones = zoneData.split('').where((char) => char != 'N').length;
+          
+          logWidgetController.text += 'Number of active zones: $activeZones\n';
+          setState(() {
+            this.activeZones = activeZones;
+          });
+        } else {
+          setState(() {
+            logWidgetController.text += 'Unexpected response format: $response.\n';
+          });
+        }
+      } else {
+        setState(() {
+          logWidgetController.text += 'No response\n';
+        });
+      }
+    } catch (e) {
+      logWidgetController.text += 'Erro: $e\n';
+    }
+  }
+
+void _updateChartData(String data) {
+  List<String> parts = data.split(';');
+
+  // Verifica se os dados têm o número esperado de campos
+  if (parts.length >= 16) {
+    // Limite de gráficos (podemos definir 50, como mencionado)
+    const int maxGraphs = 50;
+    int graphCount = 0;
+
+    // Começa a partir de 4, pois antes é a data e a hora
+    for (int i = 4; i < parts.length; i += 7) {
+      // Verifica se temos dados suficientes para um novo sensor
+      if (i + 6 < parts.length) {
+        String sensorType = parts[i]; // Tipo de sensor ('c' ou 'o')
+
+        // Se for do tipo capacitivo ('c')
+        if (sensorType == 'c' && graphCount < maxGraphs) {
+          setState(() {
+            // Cria dados para o gráfico capacitivo
+            minData.add(ChartData(double.parse(parts[i + 2])));
+            midData.add(ChartData(double.parse(parts[i + 3])));
+            maxData.add(ChartData(double.parse(parts[i + 4])));
+          });
+          graphCount++;
+        }
+        // Se for do tipo ótico ('o')
+        else if (sensorType == 'o' && graphCount < maxGraphs) {
+          setState(() {
+            // Cria dados para o gráfico ótico
+            minData.add(ChartData(double.parse(parts[i + 2])));
+            midData.add(ChartData(double.parse(parts[i + 3])));
+            maxData.add(ChartData(double.parse(parts[i + 4])));
+          });
+          graphCount++;
+        }
+      }
+    }
+
+    int maxDataPoints = timeWindow.toInt();
+
+    // Limita o número de pontos no gráfico
+    _trimExcessData(minData, maxDataPoints);
+    _trimExcessData(midData, maxDataPoints);
+    _trimExcessData(maxData, maxDataPoints);
+
+    // Limita o número de elementos no gráfico para no máximo 50
+    if (minData.length > 50) {
+      setState(() {
+        minData.removeRange(0, minData.length - 50);
+        midData.removeRange(0, midData.length - 50);
+        maxData.removeRange(0, maxData.length - 50);
+      });
+    }
+  }
+}
+
+
+  void _trimExcessData(List<ChartData> dataList, int maxDataPoints) {
+    if (dataList.length > maxDataPoints) {
+      setState(() {
+        dataList.removeRange(0, dataList.length - maxDataPoints);
+      });
+    }
+  }
+
+  double? _calculateYMin() {
+    List<double> allValues = [
+      ...minData.map((data) => data.value),
+      ...midData.map((data) => data.value),
+      ...maxData.map((data) => data.value)
+    ];
+
+    if (allValues.isEmpty) return null;
+
+    double minValue = allValues.reduce((a, b) => a < b ? a : b);
+    double margin =
+        (allValues.reduce((a, b) => a > b ? a : b) - minValue) * 0.2;
+    return minValue - margin;
+  }
+
+  double? _calculateYMax() {
+    List<double> allValues = [
+      ...minData.map((data) => data.value),
+      ...midData.map((data) => data.value),
+      ...maxData.map((data) => data.value)
+    ];
+
+    if (allValues.isEmpty) return null;
+
+    double maxValue = allValues.reduce((a, b) => a > b ? a : b);
+    double margin =
+        (maxValue - allValues.reduce((a, b) => a < b ? a : b)) * 0.2;
+    return maxValue + margin;
+  }
+
+
+List<Widget> _generateChartWidgets() {
+  List<Widget> chartWidgets = [];
+
+  // Gráfico para sensores capacitivos
+  if (minData.isNotEmpty || midData.isNotEmpty || maxData.isNotEmpty) {
+    chartWidgets.add(
+      Expanded(
+        child: CustomChart(
+          zoneName: "Capacitive Sensor",
+          chartData: minData,  // Use `minData`, `midData`, `maxData` para o gráfico capacitivo
+          dataColors: [Colors.blue, Colors.green, Colors.red], // Exemplo de cores
+          calculateYMin: _calculateYMin,
+          calculateYMax: _calculateYMax,
+        ),
+      ),
+    );
+  }
+
+  // Gráfico para sensores óticos
+  if (minData.isNotEmpty || inMidData.isNotEmpty || inMaxData.isNotEmpty) {
+    chartWidgets.add(
+      Expanded(
+        child: CustomChart(
+          zoneName: "Optical Sensor",
+          chartData: inMinData,  // Use `inMinData`, `inMidData`, `inMaxData` para o gráfico ótico
+          dataColors: [Colors.orange, Colors.purple, Colors.yellow], // Exemplo de cores
+          calculateYMin: _calculateYMinIn,
+          calculateYMax: _calculateYMaxIn,
+        ),
+      ),
+    );
+  }
+
+  // Adiciona gráficos adicionais se houver mais zonas ativas
+  if (activeZones > 1) {
+    for (int i = 1; i < activeZones; i++) {
+      // Lógica para diferentes zonas, pode ser similar aos anteriores
+      chartWidgets.add(
+        Expanded(
+          child: CustomChart(
+            zoneName: "Zone $i",
+            chartData: minData, // Altere conforme necessário
+            dataColors: [Colors.green, Colors.blue], // Exemplos de cores
+            calculateYMin: _calculateYMin,
+            calculateYMax: _calculateYMax,
+          ),
+        ),
+      );
+      if (i < activeZones - 1) {
+        chartWidgets.add(SizedBox(width: 10)); // Adiciona espaçamento entre gráficos
+      }
+    }
+  }
+
+  return chartWidgets;
+}
+
+  void _clearLogs() {
+    setState(() {
+      logWidgetController.clear();  // Limpa o conteúdo do campo de texto dos logs
+    });
+  }
+
+  void _scrollToEnd() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+
+
+
+class ChartDataBloc extends Bloc<ChartDataEvent, ChartDataState> {
+  List<ChartData> minData = [];
+  List<ChartData> midData = [];
+  List<ChartData> maxData = [];
+  String log = '';
+  bool isConnected = false;
+  bool isRunning = true;
+  String firmwareVersion = "Unknown";
+
+  ChartDataBloc() : super(ChartDataInitialState());
+
+  @override
+  Stream<ChartDataState> mapEventToState(ChartDataEvent event) async* {
+    if (event is ToggleConnectionEvent) {
+      isConnected = !isConnected;
+      log += isConnected
+          ? 'Connected to the port.\n'
+          : 'Disconnected from the port.\n';
+      yield ChartDataLoadedState(
+        minData: minData,
+        midData: midData,
+        maxData: maxData,
+        log: log,
+        isConnected: isConnected,
+        isRunning: isRunning,
+        firmwareVersion: firmwareVersion,
+      );
+    }
+
+    if (event is ToggleGraphEvent) {
+      isRunning = !isRunning;
+      yield ChartDataLoadedState(
+        minData: minData,
+        midData: midData,
+        maxData: maxData,
+        log: log,
+        isConnected: isConnected,
+        isRunning: isRunning,
+        firmwareVersion: firmwareVersion,
+      );
+    }
+
+    if (event is ExecuteCommandEvent) {
+      log += 'Sending command: ${event.command}\n';
+      yield ChartDataLoadedState(
+        minData: minData,
+        midData: midData,
+        maxData: maxData,
+        log: log,
+        isConnected: isConnected,
+        isRunning: isRunning,
+        firmwareVersion: firmwareVersion,
+      );
+    }
+
+    if (event is UpdateTimerIntervalEvent) {
+      // Update the timer interval logic here
+      yield ChartDataLoadedState(
+        minData: minData,
+        midData: midData,
+        maxData: maxData,
+        log: log,
+        isConnected: isConnected,
+        isRunning: isRunning,
+        firmwareVersion: firmwareVersion,
+      );
+    }
+
+    if (event is UpdateTimeWindowEvent) {
+      // Update the time window logic here
+      yield ChartDataLoadedState(
+        minData: minData,
+        midData: midData,
+        maxData: maxData,
+        log: log,
+        isConnected: isConnected,
+        isRunning: isRunning,
+        firmwareVersion: firmwareVersion,
+      );
+    }
+
+    if (event is DownloadLogsEvent) {
+      // Handle log download logic here
+      yield ChartDataLoadedState(
+        minData: minData,
+        midData: midData,
+        maxData: maxData,
+        log: log,
+        isConnected: isConnected,
+        isRunning: isRunning,
+        firmwareVersion: firmwareVersion,
+      );
+    }
+  }
+}
+
+
+

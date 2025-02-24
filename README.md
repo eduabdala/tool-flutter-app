@@ -3,7 +3,7 @@
 
 ### Configuração do Ambiente Flutter
 
-1. **Configuração do Ambiente Flutter**
+01. **Configuração do Ambiente Flutter**
 
     1.1 **Requisitos**
     
@@ -11,66 +11,57 @@
     - Siga as instruções em [Documentação do Flutter](https://docs.flutter.dev/get-started/install/windows/desktop).
 
     1.2 **Dependências do Flutter**
-    
-    - Este projeto depende do pacote `http` na versão ^0.13.5.
     - Execute o seguinte comando no seu terminal para obter as dependências:
     
     ```bash
     flutter pub get
     ```
 
-### Configuração do Ambiente Flask
+02. **Gerando os arquivos para build**
 
-2. **Configuração do Ambiente Flask**
+    Agora, você irá criar o projeto e gerar os arquivos necessários para a construção do aplicativo.
 
-    2.1 **Requisitos**
-    
-    - Verifique se o Python 3.6 ou superior está instalado no seu sistema.
-
-    2.2 **Instale o Flask**
-    
-    Flask é um framework leve de aplicativos da web WSGI em Python. Você pode instalá-lo via pip, o instalador de pacotes do Python.
-    
-    ```bash
-    pip install flask
-    ```
-
-    2.3 **Ativando o Ambiente Virtual**
-
-    Para gerenciar dependências e isolá-las de outros projetos, é recomendável usar um ambiente virtual. Veja como criar e ativar um ambiente virtual:
-
-    - Para Linux/macOS
-    
-    ```bash
-    $ python3 -m venv .venv
-    $ source .venv/bin/activate
-    ```
-
-    - Para Windows
-    
-    ```bash
-    > python -m venv .venv
-    > .venv\Scripts\activate
-    ```
-
-    2.4 **Executando o Servidor Flask**
-
-    Após instalar o Flask e ativar o ambiente virtual, navegue até o diretório `lib/server` no seu terminal e execute o seguinte comando para iniciar o servidor Flask:
+    2.1 **Gerando o projeto Flutter com suporte à plataforma Windows:**
 
     ```bash
-    cd lib/server
-    flask --app chamar_funcao run
+    flutter create --platforms=windows perto_tools
     ```
 
-3. **Executando o Aplicativo Flutter**
+    - Esse comando cria um projeto Flutter chamado perto_tools com suporte para a plataforma Windows.
 
-    Para executar o aplicativo Flutter, execute o seguinte comando:
+    2.2 **Navegando até o diretório do projeto:**
 
     ```bash
-    flutter run -d chrome --web-browser-flag "--disable-web-security"
+    cd perto_tools
     ```
 
-    Por favor, note que atualmente o aplicativo é executado com a segurança da web desabilitada. Isso pode ser necessário para que certos recursos funcionem corretamente, mas deve ser usado com cautela, especialmente em ambientes de produção.
-   
-Sinta-se à vontade para entrar em contato se encontrar algum problema ou tiver mais dúvidas. Boa impressão!
+    2.3 **Verificando se o ambiente está configurado corretamente (garante que o Flutter está pronto para desenvolvimento para Windows):**
+
+    ```bash
+    flutter doctor
+    ```
+
+    Isso deve confirmar que todas as ferramentas necessárias estão prontas para uso.
+
+    2.4 **Rodando o aplicativo na plataforma Windows:**
+
+    Para executar o app localmente no seu PC com Windows, utilize o comando:
+
+    ```bash
+    flutter run -d windows
+    ```
+
+    O -d windows garante que o aplicativo será executado em um ambiente de desktop Windows.
+
+    2.5 **Gerando o build para Windows:**
+
+    Quando estiver pronto para gerar a versão compilada do seu aplicativo, use:
+
+    ```bash
+    flutter build windows
+    ```
+    Esse comando cria os arquivos necessários para distribuição do aplicativo no Windows.
+
+
+
 

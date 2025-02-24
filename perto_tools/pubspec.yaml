@@ -1,0 +1,45 @@
+name: perto_tools
+description: "A new Flutter project."
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.4 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  process_run: ^0.14.2
+  flutter_libserialport: ^0.4.0
+  ffi: ^2.1.2
+  win32: ^5.5.1
+  path_provider: ^2.0.13
+  syncfusion_flutter_charts: ^20.1.58
+  flutter_bloc: ^8.0.1
+  flutter_pty: ^0.4.0
+  fl_chart: ^0.68.0
+  provider: ^6.1.2
+  equatable: ^2.0.7
+  crypto: ^3.0.6
+  encrypt: ^5.0.3
+  convert: ^3.1.2
+  pointycastle: ^3.0.0
+  sliding_up_panel: 2.0.0
+  uuid: ^4.5.1
+  csv: ^5.0.2
+  file_picker: ^5.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets: 
+  - assets/app/thermal_printer_usb.exe
+  - assets/python/thermal_printer_usb.py
+
+
