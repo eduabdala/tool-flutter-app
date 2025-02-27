@@ -1,11 +1,10 @@
-
-
-import '../../../core/data/sensor_data.dart';
+import 'package:perto_tools/core/data/antiskimming_chart_data.dart';
 
 abstract class ChartDataState {}
 
-
-class ChartDataInitialState extends ChartDataState {}
+class ChartDataInitialState extends ChartDataState {
+  
+}
 
 class ChartDataLoadingState extends ChartDataState {}
 
@@ -36,9 +35,19 @@ class ChartDataReceivedState extends ChartDataState {
 }
 
 class ChartDataRunningState extends ChartDataState {
-  final SensorData data;
+  final AntiskimmingChartData data;
 
   ChartDataRunningState({
+    required this.data,
+  });
+}
+
+class ChartDataPauseState extends ChartDataState {}
+
+class ChartDataUpdateChartState extends ChartDataState {
+  final AntiskimmingChartData data;
+
+  ChartDataUpdateChartState({
     required this.data,
   });
 }

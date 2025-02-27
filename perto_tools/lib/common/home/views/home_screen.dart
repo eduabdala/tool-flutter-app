@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:perto_tools/modules/chart_data/views/chart_view_test.dart';
 import 'package:perto_tools/modules/printer_commands/views/printer_commands_screen.dart';
-import '../../../modules/chart_data/views/chart_data_view.dart';
 import '../../../modules/key_derivation/views/key_derivation_screen.dart';
 
 class HomeScreen extends StatefulWidget {

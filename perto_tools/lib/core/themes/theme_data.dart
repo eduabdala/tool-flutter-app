@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class CustomTheme {
-  // Tema Claro (Light Mode)
   static ThemeData lightTheme() {
     return ThemeData(
       primaryColor: Colors.blue,
@@ -15,14 +14,13 @@ class CustomTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
-          backgroundColor: Colors.blue, // Cor do texto
+          backgroundColor: Colors.blue,
           shape: RoundedRectangleBorder(
-            // Bordas arredondadas
             borderRadius: BorderRadius.circular(12),
           ),
           padding: const EdgeInsets.symmetric(
-              vertical: 12, horizontal: 24), // Padding
-          elevation: 5, // Sombra do botão
+              vertical: 12, horizontal: 24),
+          elevation: 5,
         ),
       ),
       buttonTheme: const ButtonThemeData(
@@ -44,10 +42,6 @@ class CustomTheme {
     );
   }
 
-  // Tema Escuro (Dark Mode)
-// Tema Escuro (Dark Mode)
-// Tema Escuro (Dark Mode)
-// Tema Escuro (Dark Mode)
 static ThemeData darkTheme() {
   return ThemeData(
     primaryColor: const Color.fromARGB(255, 6, 120, 212),
@@ -61,15 +55,15 @@ static ThemeData darkTheme() {
 
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white, // Cor do texto (branca para boa visibilidade)
-        backgroundColor: const Color.fromARGB(255, 6, 120, 212), // Cor de fundo azul mais clara
+        foregroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 6, 120, 212),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12), // Bordas arredondadas
+          borderRadius: BorderRadius.circular(12),
         ),
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24), // Padding
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
         elevation: 5, // Sombra do botão
-        disabledBackgroundColor: const Color.fromARGB(255, 49, 47, 47), // Cor de fundo quando o botão está desativado
-        disabledForegroundColor: Color.fromARGB(255, 82, 82, 82), // Cor do texto quando o botão está desativado
+        disabledBackgroundColor: const Color.fromARGB(255, 49, 47, 47),
+        disabledForegroundColor: Color.fromARGB(255, 82, 82, 82),
       ),
     ),
 

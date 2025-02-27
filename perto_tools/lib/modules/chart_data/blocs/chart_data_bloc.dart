@@ -1,53 +1,22 @@
+import 'package:perto_tools/core/data/antiskimming_chart_data.dart';
+import 'package:perto_tools/core/services/parse_data_sensor.dart';
 import 'package:perto_tools/core/services/serial_handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/data/sensor_data.dart';
 import 'chart_data_event.dart';
 import 'chart_data_state.dart';
 
 class ChartDataBloc extends Bloc<ChartDataEvent, ChartDataState> {
   List<String> availablePorts = [];
+  List<AntiskimmingChartData> chartData = [];
   String? connectedPort;
   late SerialHandler _serialHandler;
 
-  SensorData parseSensorData(String input) {
-    List<String> parts = input.split(';');
-    String data = parts[1];
-    String hora = parts[2];
-    List<Map<String, dynamic>> sensors = [];
-    int i = 3; // Começamos após a data e hora
 
-    while (i < parts.length) {
-      if (i + 5 < parts.length) {
-        String type = parts[i];
-        String zone = parts[i + 1];
-        String status = parts[i + 2];
-        
-        String minValue = parts[i + 3];
-        String value = parts[i + 4];
-        String maxValue = parts[i + 5];
-
-        sensors.add({
-          'type': type,
-          'zone': zone,
-          'status': status,
-          'min_value': minValue,
-          'value': value,
-          'max_value': maxValue,
-        });
-
-        i += 6;
-      } else {
-        break;
-      }
-    }
-
-    return SensorData(data: data, hora: hora, sensors: sensors);
-  }
 
   ChartDataBloc() : super(ChartDataInitialState()) {
     on<GetAvailablePortsEvent>((event, emit) async {
       try {
-        List<String> availablePorts = await SerialHandler.listAvailablePorts();
+        List<String> availablePorts = SerialHandler.listAvailablePorts();
         emit(ChartDataAvailablePortsState(availablePorts));
       } catch (e) {
         emit(ChartDataErrorState('Error to list ports: $e'));
@@ -97,7 +66,7 @@ class ChartDataBloc extends Bloc<ChartDataEvent, ChartDataState> {
           String? sensorResponse = await _serialHandler.sendData(event.command);
           if (sensorResponse != null) {
             try {
-              SensorData sensorDataResponse = parseSensorData(sensorResponse);
+              AntiskimmingChartData sensorDataResponse = parseAntiskimmingData(sensorResponse);
               emit(ChartDataRunningState(data: sensorDataResponse));
             } catch (e) {
               emit(ChartDataErrorState('error'));

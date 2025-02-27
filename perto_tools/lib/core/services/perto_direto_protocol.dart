@@ -1,44 +1,39 @@
-// perto_direto_protocol.dart
 import 'dart:convert';
 import 'dart:typed_data';
 
-/// Protocol handler to handle frame construction and response parsing
 class ProtocolHandler {
-  /// Builds a frame with start byte (0x02), command, end byte (0x03), and checksum (BCC)
   static Uint8List buildFrame(String command) {
-    final List<int> frame = [0x02]; // Start Byte
+    final List<int> frame = [0x02];
     final commandBytes = utf8.encode(command);
-    frame.addAll(commandBytes); // Add command bytes
-    frame.add(0x03); // End Byte
+    frame.addAll(commandBytes);
+    frame.add(0x03);
 
-    final bcc = calculateBCC(frame); // Calculate BCC (checksum)
-    frame.add(bcc); // Add BCC to the frame
+    final bcc = calculateBCC(frame);
+    frame.add(bcc);
 
     return Uint8List.fromList(frame);
   }
 
-  /// Calculates the BCC (checksum) for the frame using XOR operation
   static int calculateBCC(List<int> frame) {
     int bcc = 0;
     for (final byte in frame) {
-      bcc ^= byte; // XOR operation for BCC
+      bcc ^= byte;
     }
     return bcc;
   }
 
-  /// Parses the response, validating the start byte, end byte, and checksum (BCC)
   static String parseResponse(List<int> response) {
     if (response.isEmpty || response.first != 0x02 || response.last != 0x03) {
-      return 'Invalid response'; // Check start and end byte
+      return 'Invalid response';
     }
 
-    final data = response.sublist(1, response.length - 2); // Extract data (without delimiters)
-    final expectedBCC = calculateBCC(response.sublist(0, response.length - 1)); // Verify BCC
+    final data = response.sublist(1, response.length - 2);
+    final expectedBCC = calculateBCC(response.sublist(0, response.length - 1));
 
     if (response[response.length - 2] != expectedBCC) {
-      return 'Checksum error'; // Check BCC
+      return 'Checksum error';
     }
 
-    return utf8.decode(data); // Decode the data and return
+    return utf8.decode(data);
   }
 }

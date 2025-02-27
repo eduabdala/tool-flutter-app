@@ -10,12 +10,11 @@ class ThemeNotifier extends ChangeNotifier implements ValueListenable<bool> {
     notifyListeners();
   }
 
-  // Toggle the theme mode
   void toggleTheme() {
     _isDarkMode = !_isDarkMode;
     notifyListeners();
   }
 
   @override
-  bool get value => isDarkMode; // Required for ValueListenable<bool>
+  bool get value => isDarkMode;
 }

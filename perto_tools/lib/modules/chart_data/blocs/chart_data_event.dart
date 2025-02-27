@@ -1,4 +1,3 @@
-// chart_data_event.dart
 abstract class ChartDataEvent {}
 
 class ConnectionEvent extends ChartDataEvent {
@@ -17,10 +16,8 @@ class DesconnectionEvent extends ChartDataEvent {
 class GetDeviceConfigEvent extends ChartDataEvent {
   final String command;
 
-
   GetDeviceConfigEvent(this.command);
 }
-
 
 class StartGraphEvent extends ChartDataEvent {
   final bool running;
@@ -51,6 +48,8 @@ class ExecuteCommandEvent extends ChartDataEvent {
 
 class ReceiveDataEvent extends ChartDataEvent {}
 
+class UpdateChartDataEvent extends ChartDataEvent {}
+
 class UpdateTimerIntervalEvent extends ChartDataEvent {
   final double interval;
   UpdateTimerIntervalEvent(this.interval);
@@ -62,5 +61,3 @@ class UpdateTimeWindowEvent extends ChartDataEvent {
 }
 
 class DownloadLogsEvent extends ChartDataEvent {}
-
-

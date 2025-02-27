@@ -43,7 +43,7 @@ class CustomChart extends StatelessWidget {
   /// @param maxDataColor Color for the maximum data series
   /// @param calculateYMin Function to determine the minimum Y-axis value
   /// @param calculateYMax Function to determine the maximum Y-axis value
-  CustomChart({
+  const CustomChart({super.key, 
     required this.chartName,
     required this.chartData,
     required this.chartDataName,

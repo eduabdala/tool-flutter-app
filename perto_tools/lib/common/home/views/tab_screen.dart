@@ -45,6 +45,8 @@ import 'home_screen.dart';
 /// screen with a unique `Navigator` to preserve its state. The widget also supports adding and 
 /// removing tabs dynamically, and it provides a mechanism to toggle between light and dark themes.
 class TabScreen extends StatelessWidget {
+  const TabScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final tabManager = Provider.of<TabManager>(context);
@@ -82,7 +84,7 @@ class TabScreen extends StatelessWidget {
   /// @param themeProvider The ThemeNotifier to manage theme state.
   /// @return The constructed tab bar UI.
   Widget _buildTabBar(BuildContext context, TabManager tabManager, ThemeNotifier themeProvider) {
-    return Container(
+    return SizedBox(
       height: 40,
       child: Row(
         children: [
@@ -186,7 +188,7 @@ class TabScreen extends StatelessWidget {
           ? () {
               tabManager.addTab(ScreenModel(
                 title: 'Tab ${tabManager.screens.length + 1}',
-                screen: HomeScreen(),
+                screen: const HomeScreen(),
                 navigatorKey: GlobalKey<NavigatorState>(),  // Assign a GlobalKey for each new tab
               ));
             }
