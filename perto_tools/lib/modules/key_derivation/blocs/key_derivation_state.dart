@@ -5,7 +5,6 @@ abstract class KeyDerivationState {}
 class KeyDerivationInitial extends KeyDerivationState {}
 
 class KeyDerivationLoadingState extends KeyDerivationState {
-  // Este estado é usado quando a derivação da chave está em progresso
 }
 
 class KeyDerivationSuccess extends KeyDerivationState {

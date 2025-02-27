@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:crypto/crypto.dart' as crypto; // Alias para a biblioteca crypto
+import 'package:crypto/crypto.dart' as crypto;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:convert/convert.dart'; // Para conversão de hexadecimal
-import 'package:pointycastle/api.dart' as pointycastle; // Alias para a biblioteca pointycastle
+import 'package:convert/convert.dart';
+import 'package:pointycastle/api.dart' as pointycastle;
 import 'package:pointycastle/block/aes.dart';
 import 'package:pointycastle/block/modes/cbc.dart';
 import '../models/key_derivation_model.dart';
@@ -13,7 +13,6 @@ import 'key_derivation_state.dart';
 class KeyDerivationBloc extends Bloc<KeyDerivationEvent, KeyDerivationState> {
   KeyDerivationBloc() : super(KeyDerivationInitial()) {
     on<DeriveKeyEvent>((event, emit) async {
-      // Define o estado de loading
       emit(KeyDerivationLoadingState());
 
       try {
@@ -23,21 +22,16 @@ class KeyDerivationBloc extends Bloc<KeyDerivationEvent, KeyDerivationState> {
         String derivedKey = hex.encode(derivedKeyBytes);
         String kcv = _calculateKCV(derivedKey);
 
-        // Emite o estado com os dados da chave derivada
         emit(KeyDerivationLoadedState(KeyDerivationModel(event.hardwareId, event.originalKey, derivedKey, kcv)));
       } catch (e) {
-        // Em caso de erro, emite um estado de erro
         emit(KeyDerivationErrorState("Erro na derivação de chave: $e"));
       }
     });
 
-    // Para lidar com o evento de reset da derivação de chave
     on<ResetKeyDerivationEvent>((event, emit) {
       emit(KeyDerivationInitial());
     });
   }
-
-  // Métodos auxiliares conforme o código que você forneceu
 
   String _convertAndHash(String hexSerialNumber) {
     String decimalSerialNumber = BigInt.parse(hexSerialNumber, radix: 16).toString();

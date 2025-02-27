@@ -1,5 +1,3 @@
-// printer_commands_event.dart
-
 abstract class CommandEvent {}
 
 class ExecuteCommand extends CommandEvent {

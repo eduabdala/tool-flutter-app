@@ -25,10 +25,10 @@ class _SerialCommunicationPanelState extends State<SerialCommunicationPanel>
   bool isPdMode = false;
 
   late TabController _tabController;
-  SerialHandler? _serialHandler; // Instância do SerialHandler
-  String _commandResponse = ''; // Resposta do comando enviado
+  SerialHandler? _serialHandler;
+  String _commandResponse = '';
 
-  List<String> availablePorts = []; // Lista das portas disponíveis
+  List<String> availablePorts = [];
   List<int> availableBaudRates = [
     110,
     300,
@@ -44,7 +44,7 @@ class _SerialCommunicationPanelState extends State<SerialCommunicationPanel>
     115200,
     128000,
     256000
-  ]; // Lista de baud rates disponíveis
+  ];
 
   @override
   void initState() {
@@ -58,18 +58,17 @@ class _SerialCommunicationPanelState extends State<SerialCommunicationPanel>
     _tabController.dispose();
     if (_serialHandler != null && isConnected) {
       _serialHandler!
-          .closeConnection(); // Fechar a conexão quando o widget for descartado
+          .closeConnection();
     }
     super.dispose();
   }
 
-  // Função para buscar portas disponíveis
   void _loadAvailablePorts() {
     availablePorts = SerialHandler.listAvailablePorts();
     if (availablePorts.isNotEmpty) {
       setState(() {
         _selectedPort =
-            availablePorts.first; // Seleciona a primeira porta disponível
+            availablePorts.first;
       });
     }
   }
@@ -195,7 +194,7 @@ class _SerialCommunicationPanelState extends State<SerialCommunicationPanel>
   Widget _buildBaudRateDropdown() {
     return DropdownButton<int>(
       hint: const Text('Baudrate'),
-      value: _selectedBaudRate ?? 115200, // Define um baud rate padrão
+      value: _selectedBaudRate ?? 115200,
       items: availableBaudRates.map((baudRate) {
         return DropdownMenuItem<int>(
           value: baudRate,
@@ -235,7 +234,6 @@ class _SerialCommunicationPanelState extends State<SerialCommunicationPanel>
             });
           }
         } else {
-          // Exibe um erro ou uma mensagem informando que a porta ou a taxa de transmissão não foi selecionada
           setState(() {
             isConnected = false;
           });
@@ -289,7 +287,6 @@ class _SerialCommunicationPanelState extends State<SerialCommunicationPanel>
   Widget _buildSendCommandButton() {
     return ElevatedButton(
       onPressed: () {
-        // Ação para enviar o comando do terminal
         print('Comando enviado');
       },
       child: Text('Enviar Comando'),
@@ -313,7 +310,6 @@ class _SerialCommunicationPanelState extends State<SerialCommunicationPanel>
   }
 
   void _sendCommand(String command) {
-    // Aqui, você implementaria o envio de comandos para o dispositivo via SerialHandler
     if (_serialHandler != null && isConnected) {
       _serialHandler!.sendData(command).then((response) {
         setState(() {

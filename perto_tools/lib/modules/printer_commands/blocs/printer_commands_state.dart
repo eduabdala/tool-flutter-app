@@ -1,4 +1,3 @@
-// lib/bloc/command_state.dart
 abstract class CommandState {}
 
 class CommandInitial extends CommandState {}

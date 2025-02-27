@@ -45,12 +45,7 @@ class CommandBloc extends Bloc<CommandEvent, CommandState> {
         mode: ProcessStartMode.normal,
       );
 
-      String stdoutResult = '';
       String stderrResult = '';
-
-      await for (var line in process.stdout.transform(utf8.decoder)) {
-        stdoutResult += line;
-      }
 
       await for (var line in process.stderr.transform(utf8.decoder)) {
         stderrResult += line;
@@ -69,9 +64,8 @@ class CommandBloc extends Bloc<CommandEvent, CommandState> {
     }
   }
 
-  // Função para lidar com o evento de reset
   void _onResetCommandEvent(
       ResetCommandEvent event, Emitter<CommandState> emit) {
-    emit(CommandInitial()); // Reseta o estado para o inicial
+    emit(CommandInitial());
   }
 }

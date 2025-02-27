@@ -18,7 +18,6 @@ class SensorData {
     required this.extras,
   });
 
-  // Sobrescrevendo o método toString para exibir corretamente as propriedades
   @override
   String toString() {
     return 'SensorData(tipo: $tipo, id: $id, status: $status, '

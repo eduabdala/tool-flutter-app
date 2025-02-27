@@ -15,8 +15,9 @@ class _HomeScreenState extends State<HomeScreen> {
   final Map<String, WidgetBuilder> buttonToScreenMap = {
     'Key Derivation': (context) => const KeyDerivationScreen(),
     'Antiskimming': (context) => SuChartApp(),
-    'Cash Recycler': (context) => const HomeScreen(),
     'Thermal Printer': (context) => const CommandScreen(),
+    'Fliker': (context) => const HomeScreen(),
+    'Cash Recycler': (context) => const HomeScreen(),
     'Sensor Board': (context) => const HomeScreen(),
   };
 
