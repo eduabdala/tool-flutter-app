@@ -1,11 +1,11 @@
 /.vscode/
 /build/
-perto_tools/windows/
-perto_tools/README.md
+flutter_tools/windows/
+flutter_tools/linux/
+flutter_tools/README.md
 /linux/
 /ios/
 /web/
 /android/
 .metadata
 analysis_options.yaml
-.gitignore

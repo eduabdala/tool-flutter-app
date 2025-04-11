@@ -24,15 +24,15 @@
     2.1 **Gerando o projeto Flutter com suporte à plataforma Windows:**
 
     ```bash
-    flutter create --platforms=windows perto_tools
+    flutter create --platforms=windows flutter_tools
     ```
 
-    - Esse comando cria um projeto Flutter chamado perto_tools com suporte para a plataforma Windows.
+    - Esse comando cria um projeto Flutter chamado flutter_tools com suporte para a plataforma Windows.
 
     2.2 **Navegando até o diretório do projeto:**
 
     ```bash
-    cd perto_tools
+    cd flutter_tools
     ```
 
     2.3 **Verificando se o ambiente está configurado corretamente (garante que o Flutter está pronto para desenvolvimento para Windows):**
