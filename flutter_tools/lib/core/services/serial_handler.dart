@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'perto_direto_protocol.dart';
+import 'serial_protocol.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 
 class SerialHandler {
