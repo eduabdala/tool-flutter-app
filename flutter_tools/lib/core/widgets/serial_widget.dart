@@ -223,7 +223,7 @@ class _SerialCommunicationPanelState extends State<SerialCommunicationPanel>
         if (_selectedPort != null && _selectedBaudRate != null) {
           _serialHandler =
               SerialHandler(_selectedPort!, baudRate: _selectedBaudRate!);
-          int result = await _serialHandler!.openConnection();
+          int result = _serialHandler!.openConnection();
           if (result == 0) {
             setState(() {
               isConnected = true;
@@ -289,7 +289,7 @@ class _SerialCommunicationPanelState extends State<SerialCommunicationPanel>
       onPressed: () {
         print('Comando enviado');
       },
-      child: Text('Enviar Comando'),
+      child: const Text('Enviar Comando'),
     );
   }
 
@@ -303,7 +303,7 @@ class _SerialCommunicationPanelState extends State<SerialCommunicationPanel>
             borderRadius: BorderRadius.circular(8),
           ),
           child:
-              Text(_commandResponse, style: TextStyle(fontFamily: 'Courier')),
+              Text(_commandResponse, style: const TextStyle(fontFamily: 'Courier')),
         ),
       ),
     );

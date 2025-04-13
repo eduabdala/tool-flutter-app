@@ -6,6 +6,8 @@ import '../blocs/chart_data_event.dart';
 import '../blocs/chart_data_state.dart';
 
 class SuChartApp extends StatefulWidget {
+  const SuChartApp({super.key});
+
   @override
   _SuChartAppState createState() => _SuChartAppState();
 }
@@ -23,7 +25,7 @@ class _SuChartAppState extends State<SuChartApp> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('SU Data Chart'),
+          title: const Text('SU Data Chart'),
         ),
         body: BlocProvider(
           create: (_) => ChartDataBloc(),
@@ -31,7 +33,7 @@ class _SuChartAppState extends State<SuChartApp> {
               builder: (context, state) {
             return Column(
               children: [
-                Expanded(
+                const Expanded(
                   flex: 1,
                   child: SingleChildScrollView(
                     child: Column(
@@ -43,7 +45,7 @@ class _SuChartAppState extends State<SuChartApp> {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      Text("COM: "),
+                      const Text("COM: "),
                       BlocBuilder<ChartDataBloc, ChartDataState>(
                         builder: (context, state) {
                           if (state is ChartDataAvailablePortsState) {
@@ -62,11 +64,11 @@ class _SuChartAppState extends State<SuChartApp> {
                               }).toList(),
                             );
                           } else {
-                            return Text('No ports available');
+                            return const Text('No ports available');
                           }
                         },
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
@@ -77,9 +79,9 @@ class _SuChartAppState extends State<SuChartApp> {
                               .read<ChartDataBloc>()
                               .add(GetAvailablePortsEvent());
                         },
-                        child: Icon(Icons.refresh),
+                        child: const Icon(Icons.refresh),
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
@@ -102,7 +104,7 @@ class _SuChartAppState extends State<SuChartApp> {
                         },
                         child: Text(isConnected ? "Connected to $selectedPort" : "Disconnected"),
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
@@ -123,7 +125,7 @@ class _SuChartAppState extends State<SuChartApp> {
                         },
                         child: Icon(isRunning ? Icons.pause : Icons.play_arrow),
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
@@ -138,7 +140,7 @@ class _SuChartAppState extends State<SuChartApp> {
                         },
                         child: Text(isPdMode ? "PD" : "CLI"),
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blueGrey,
@@ -147,9 +149,9 @@ class _SuChartAppState extends State<SuChartApp> {
                         onPressed: () {
                           context.read<ChartDataBloc>().add(ClearChartEvent());
                         },
-                        child: Icon(Icons.cleaning_services),
+                        child: const Icon(Icons.cleaning_services),
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blueGrey,
@@ -160,14 +162,14 @@ class _SuChartAppState extends State<SuChartApp> {
                               .read<ChartDataBloc>()
                               .add(DownloadLogsEvent());
                         },
-                        child: Icon(Icons.build),
+                        child: const Icon(Icons.build),
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Timer Interval (ms):"),
-                          SizedBox(height: 5),
+                          const Text("Timer Interval (ms):"),
+                          const SizedBox(height: 5),
                           Slider(
                             value: timerInterval,
                             min: 300.0,
@@ -185,12 +187,12 @@ class _SuChartAppState extends State<SuChartApp> {
                           ),
                         ],
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Time Window (samples):"),
-                            SizedBox(height: 5),
+                            const Text("Time Window (samples):"),
+                            const SizedBox(height: 5),
                             Slider(
                               value: timeWindow,
                               min: 20.0,
@@ -214,8 +216,8 @@ class _SuChartAppState extends State<SuChartApp> {
                   flex: 0,
                   child: Container(
                     height: 200,
-                    margin: EdgeInsets.symmetric(vertical: 10.0),
-                    padding: EdgeInsets.all(10.0),
+                    margin: const EdgeInsets.symmetric(vertical: 10.0),
+                    padding: const EdgeInsets.all(10.0),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(5.0),
@@ -223,7 +225,7 @@ class _SuChartAppState extends State<SuChartApp> {
                     child: Column(
                       children: [
                         TextField(
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Enter command',
                           ),
                           onSubmitted: (String command) {
@@ -240,7 +242,7 @@ class _SuChartAppState extends State<SuChartApp> {
                                 child: TextField(
                                   maxLines: null,
                                   enabled: false,
-                                  decoration: InputDecoration.collapsed(
+                                  decoration: const InputDecoration.collapsed(
                                     hintText: 'Serial Logs',
                                   ),
                                   style: Theme.of(context).textTheme.bodyLarge,
