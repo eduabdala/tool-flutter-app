@@ -12,6 +12,8 @@ import 'package:file_picker/file_picker.dart';
 import '../../../core/services/serial_handler.dart';
 
 class SuChartApp extends StatefulWidget {
+  const SuChartApp({super.key});
+
   @override
   _SerialChartAppState createState() => _SerialChartAppState();
 }
@@ -90,7 +92,6 @@ class _SerialChartAppState extends State<SuChartApp> {
             isConnected = true;
             logWidgetController.text += 'Connected to $selectedPort\n';
           });
-          _getConfig();
         } else {
           setState(() {
             logWidgetController.text += 'Failed to connect to $selectedPort\n';
@@ -188,11 +189,11 @@ class _SerialChartAppState extends State<SuChartApp> {
       return;
     }
     if (isPdMode) {
-      String commandAsn = "\x02" + commandLineCLIController.text + "\x03";
+      String commandAsn = "\x02${commandLineCLIController.text}\x03";
       String bcc = _calculateBCC(commandAsn);
       command = commandAsn + bcc;
     } else {
-      command = commandLineCLIController.text + "\n";
+      command = "${commandLineCLIController.text}\n";
     }
     setState(() {
       logWidgetController.text += 'Sending: $command\n';
@@ -233,7 +234,7 @@ class _SerialChartAppState extends State<SuChartApp> {
   }
 
   Future<void> _getConfig() async {
-    String commandAsn = "\x02" + "i" + "\x03";
+    String commandAsn = "\x02i\x03";
     String bcc = _calculateBCC(commandAsn);
     String command = commandAsn + bcc;
     try {
@@ -257,7 +258,7 @@ class _SerialChartAppState extends State<SuChartApp> {
   }
 
   Future<void> _getZone() async {
-    String commandAsn = "\x02" + "S" + "\x03";
+    String commandAsn = "\x02S\x03";
     String bcc = _calculateBCC(commandAsn);
     String command = commandAsn + bcc;
     try {
@@ -318,24 +319,26 @@ class _SerialChartAppState extends State<SuChartApp> {
       });
 
       int maxDataPoints = timeWindow.toInt();
-      dynamicData
-          .forEach((dataList) => _trimExcessData(dataList, maxDataPoints));
-      dynamicInData
-          .forEach((dataList) => _trimExcessData(dataList, maxDataPoints));
+      for (var dataList in dynamicData) {
+        _trimExcessData(dataList, maxDataPoints);
+      }
+      for (var dataList in dynamicInData) {
+        _trimExcessData(dataList, maxDataPoints);
+      }
 
       // Limite de dados para evitar overflow
       if (dynamicData.any((dataList) => dataList.length > 50)) {
         setState(() {
-          dynamicData.forEach((dataList) {
+          for (var dataList in dynamicData) {
             if (dataList.length > 50) {
               dataList.removeRange(0, dataList.length - 50);
             }
-          });
-          dynamicInData.forEach((dataList) {
+          }
+          for (var dataList in dynamicInData) {
             if (dataList.length > 50) {
               dataList.removeRange(0, dataList.length - 50);
             }
-          });
+          }
         });
       }
     }
@@ -358,7 +361,7 @@ class _SerialChartAppState extends State<SuChartApp> {
           zoneName: 'otico',
           dataSeries:
               dynamicData, // Passa uma lista vazia para garantir que começa vazio
-          dataNames: ['Min Value', 'Value', 'Max Value'],
+          dataNames: const ['Min Value', 'Value', 'Max Value'],
           calculateYMin: _calculateYMin,
           calculateYMax: _calculateYMax,
         ),
@@ -371,7 +374,7 @@ class _SerialChartAppState extends State<SuChartApp> {
           zoneName: 'otico',
           dataSeries:
               dynamicInnData, // Passa uma lista vazia para garantir que começa vazio
-          dataNames: ['Min Value', 'Value', 'Max Value'],
+          dataNames: const ['Min Value', 'Value', 'Max Value'],
           calculateYMin: _calculateYMin,
           calculateYMax: _calculateYMax,
         ),
@@ -385,14 +388,14 @@ class _SerialChartAppState extends State<SuChartApp> {
           child: CustomChart(
             zoneName: 'otico',
             dataSeries: dynamicInData, // Lista vazia inicial
-            dataNames: ['Min Value', 'Value', 'Max Value'],
+            dataNames: const ['Min Value', 'Value', 'Max Value'],
             calculateYMin: _calculateYMinIn,
             calculateYMax: _calculateYMaxIn,
           ),
         ),
       );
       if (i < activeZones - 1) {
-        chartWidgets.add(SizedBox(width: 10));
+        chartWidgets.add(const SizedBox(width: 10));
       }
     }
 
@@ -445,20 +448,20 @@ class _SerialChartAppState extends State<SuChartApp> {
 
   void _clearCharts() {
     setState(() {
-      dynamicData.forEach((dataList) {
+      for (var dataList in dynamicData) {
         dataList.clear();
         dataList.add(ChartData(0)); // Adiciona o valor 0 após limpar
-      });
+      }
 
-      dynamicInData.forEach((dataList) {
+      for (var dataList in dynamicInData) {
         dataList.clear();
         dataList.add(ChartData(0)); // Adiciona o valor 0 após limpar
-      });
+      }
     });
   }
 
   Future<void> _calibrating() async {
-    String commandAsn = "\x02" + "C" + "\x03";
+    String commandAsn = "\x02C\x03";
     String bcc = _calculateBCC(commandAsn);
     String command = commandAsn + bcc;
     try {
@@ -492,7 +495,7 @@ class _SerialChartAppState extends State<SuChartApp> {
       if (scrollController.hasClients) {
         scrollController.animateTo(
           scrollController.position.maxScrollExtent,
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
       }
@@ -503,7 +506,7 @@ class _SerialChartAppState extends State<SuChartApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('SU Data Chart - $firmwareVersion'),
+        title: Text('Data Chart - $firmwareVersion'),
       ),
       body: Column(
         children: [
@@ -526,7 +529,7 @@ class _SerialChartAppState extends State<SuChartApp> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                Text("COM: "),
+                const Text("COM: "),
                 DropdownButton<String>(
                   value: selectedPort,
                   items: availablePorts
@@ -541,18 +544,18 @@ class _SerialChartAppState extends State<SuChartApp> {
                     });
                   },
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     foregroundColor: Colors.white,
                   ),
                   onPressed: _listAvailablePorts,
-                  child: Icon(
+                  child: const Icon(
                     Icons.refresh,
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isConnected ? Colors.green : Colors.red,
@@ -561,7 +564,7 @@ class _SerialChartAppState extends State<SuChartApp> {
                   onPressed: _toggleConnection,
                   child: Text(isConnected ? "Connected" : "Disconnected"),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
@@ -572,7 +575,7 @@ class _SerialChartAppState extends State<SuChartApp> {
                     isRunning ? Icons.play_arrow : Icons.pause,
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
@@ -582,34 +585,34 @@ class _SerialChartAppState extends State<SuChartApp> {
                   onPressed: _toggleCmdMode,
                   child: Text(isPdMode ? "PD" : "CLI"),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blueGrey,
                     foregroundColor: Colors.white,
                   ),
                   onPressed: _clearCharts,
-                  child: Icon(
+                  child: const Icon(
                     Icons.cleaning_services,
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blueGrey,
                     foregroundColor: Colors.white,
                   ),
                   onPressed: _calibrating,
-                  child: Icon(
+                  child: const Icon(
                     Icons.build,
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Timer Interval (ms):"),
-                    SizedBox(height: 5),
+                    const Text("Timer Interval (ms):"),
+                    const SizedBox(height: 5),
                     SizedBox(
                       width: 200,
                       child: Slider(
@@ -628,10 +631,10 @@ class _SerialChartAppState extends State<SuChartApp> {
                     ),
                   ],
                 ),
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text("Time Window (samples):"),
-                  SizedBox(height: 5),
+                  const Text("Time Window (samples):"),
+                  const SizedBox(height: 5),
                   SizedBox(
                     width: 200,
                     child: Slider(
@@ -656,8 +659,8 @@ class _SerialChartAppState extends State<SuChartApp> {
             flex: 0,
             child: Container(
               height: 200,
-              margin: EdgeInsets.symmetric(vertical: 10.0),
-              padding: EdgeInsets.all(10.0),
+              margin: const EdgeInsets.symmetric(vertical: 10.0),
+              padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(5.0),
@@ -666,7 +669,7 @@ class _SerialChartAppState extends State<SuChartApp> {
                 children: [
                   TextField(
                     controller: commandLineCLIController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Enter command',
                     ),
                     onSubmitted: (value) {
@@ -707,7 +710,7 @@ class _SerialChartAppState extends State<SuChartApp> {
                             controller: logWidgetController,
                             maxLines: null,
                             enabled: false,
-                            decoration: InputDecoration.collapsed(
+                            decoration: const InputDecoration.collapsed(
                               hintText: 'Serial Logs',
                             ),
                             style: Theme.of(context).textTheme.bodyLarge,
@@ -754,7 +757,7 @@ class CustomChart extends StatefulWidget {
   final double? Function() calculateYMin;
   final double? Function() calculateYMax;
 
-  CustomChart({
+  const CustomChart({super.key, 
     required this.zoneName,
     required this.dataSeries,
     required this.dataNames,
@@ -818,7 +821,7 @@ class _CustomChartState extends State<CustomChart> {
             xValueMapper: (ChartData data, _) => data.timestamp,
             yValueMapper: (ChartData data, _) => data.value,
             name: widget.dataNames[series],
-            markerSettings: MarkerSettings(
+            markerSettings: const MarkerSettings(
                 isVisible: false,
                 width: 5,
                 height: 5), // Ajuste do tamanho do marcador
@@ -832,7 +835,7 @@ class _CustomChartState extends State<CustomChart> {
       });
 
       return isLoading
-          ? Center(child: CircularProgressIndicator()) // Exibe o carregamento
+          ? const Center(child: CircularProgressIndicator()) // Exibe o carregamento
           : SfCartesianChart(
               title: ChartTitle(text: widget.zoneName),
               legend: Legend(
@@ -853,7 +856,7 @@ class _CustomChartState extends State<CustomChart> {
                   num numericValue = args.value;
                   String formattedValue =
                       '${(numericValue % 60).toStringAsFixed(1)} s';
-                  return ChartAxisLabel(formattedValue, TextStyle());
+                  return ChartAxisLabel(formattedValue, const TextStyle());
                 },
               ),
               primaryYAxis: NumericAxis(
@@ -874,7 +877,7 @@ class _CustomChartState extends State<CustomChart> {
       // Em caso de erro, mostrar um gráfico vazio
       return SfCartesianChart(
         title: ChartTitle(text: widget.zoneName),
-        series: [], // Gráfico vazio
+        series: const [], // Gráfico vazio
         primaryXAxis: NumericAxis(),
         primaryYAxis: NumericAxis(),
       );
@@ -992,12 +995,12 @@ class SensorValue {
 class SensorChartWidget extends StatelessWidget {
   final Sensor sensor;
 
-  const SensorChartWidget({required this.sensor});
+  const SensorChartWidget({super.key, required this.sensor});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(
@@ -1005,13 +1008,13 @@ class SensorChartWidget extends StatelessWidget {
           children: [
             Text(
               '${sensor.type} Zona ${sensor.zone}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Text('Estado: ${sensor.state}', style: TextStyle(fontSize: 16)),
-            SizedBox(height: 10),
+            Text('Estado: ${sensor.state}', style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 10),
             Container(
               height: 100,
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: SfCartesianChart(
                 primaryXAxis: CategoryAxis(),
                 series: <ChartSeries>[
@@ -1021,7 +1024,7 @@ class SensorChartWidget extends StatelessWidget {
                     dataSource: _createChartData(sensor, 0),
                     xValueMapper: (SensorValue value, _) =>  _formatDate(value.timestamp), // Usando timestamp no eixo X
                     yValueMapper: (SensorValue value, _) => value.value,
-                    dataLabelSettings: DataLabelSettings(isVisible: true),
+                    dataLabelSettings: const DataLabelSettings(isVisible: true),
                   ),
                   // Série para o value com timestamp
                   LineSeries<SensorValue, String>(
@@ -1029,7 +1032,7 @@ class SensorChartWidget extends StatelessWidget {
                     dataSource: _createChartData(sensor, 1),
                     xValueMapper: (SensorValue value, _) =>  _formatDate(value.timestamp), // Usando timestamp no eixo X
                     yValueMapper: (SensorValue value, _) => value.value,
-                    dataLabelSettings: DataLabelSettings(isVisible: true),
+                    dataLabelSettings: const DataLabelSettings(isVisible: true),
                   ),
                   // Série para o maxValue com timestamp
                   LineSeries<SensorValue, String>(
@@ -1037,12 +1040,12 @@ class SensorChartWidget extends StatelessWidget {
                     dataSource: _createChartData(sensor, 2),
                     xValueMapper: (SensorValue value, _) =>  _formatDate(value.timestamp), // Usando timestamp no eixo X
                     yValueMapper: (SensorValue value, _) => value.value,
-                    dataLabelSettings: DataLabelSettings(isVisible: true),
+                    dataLabelSettings: const DataLabelSettings(isVisible: true),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -1055,9 +1058,9 @@ class SensorChartWidget extends StatelessWidget {
 
     // Gerar uma lista de dados com um timestamp crescente
     return [
-      SensorValue(now.add(Duration(seconds: 0)), sensor.values[0].toDouble()), // minValue
-      SensorValue(now.add(Duration(seconds: 1)), sensor.values[1].toDouble()), // value
-      SensorValue(now.add(Duration(seconds: 2)), sensor.values[2].toDouble()), // maxValue
+      SensorValue(now.add(const Duration(seconds: 0)), sensor.values[0].toDouble()), // minValue
+      SensorValue(now.add(const Duration(seconds: 1)), sensor.values[1].toDouble()), // value
+      SensorValue(now.add(const Duration(seconds: 2)), sensor.values[2].toDouble()), // maxValue
     ];
   }
     // Função para formatar o DateTime para String (exemplo: "HH:mm:ss")

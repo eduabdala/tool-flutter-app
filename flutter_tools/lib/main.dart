@@ -73,7 +73,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,  ///< Hides the debug banner in the app
       theme: themeProvider.isDarkMode ? CustomTheme.darkTheme() : CustomTheme.lightTheme(),  ///< Apply the selected theme
-      home: TabScreen(),  ///< Set the home screen to the TabScreen widget
+      home: const TabScreen(),  ///< Set the home screen to the TabScreen widget
     );
   }
 }

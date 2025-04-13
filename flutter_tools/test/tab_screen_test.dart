@@ -13,7 +13,7 @@ void main() {
           ChangeNotifierProvider(create: (_) => TabManager()),
           ChangeNotifierProvider(create: (_) => ThemeNotifier()),
         ],
-        child: MaterialApp(
+        child: const MaterialApp(
           home: TabScreen(),
         ),
       ),
@@ -39,7 +39,7 @@ void main() {
           ChangeNotifierProvider(create: (_) => TabManager()),
           ChangeNotifierProvider(create: (_) => ThemeNotifier()),
         ],
-        child: MaterialApp(
+        child: const MaterialApp(
           home: TabScreen(),
         ),
       ),

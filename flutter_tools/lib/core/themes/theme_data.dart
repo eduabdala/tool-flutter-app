@@ -61,7 +61,7 @@ class CustomTheme {
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
           elevation: 5, // Sombra do botão
           disabledBackgroundColor: const Color.fromARGB(255, 49, 47, 47),
-          disabledForegroundColor: Color.fromARGB(255, 82, 82, 82),
+          disabledForegroundColor: const Color.fromARGB(255, 82, 82, 82),
         ),
       ),
       buttonTheme: const ButtonThemeData(

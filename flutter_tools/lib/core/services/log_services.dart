@@ -40,13 +40,13 @@ class CsvLogger {
         logWidgetController.text += "Log file created in: $filePath\n";
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Logs downloaded successfully!'),
           ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('No log file found.'),
           ),
         );

@@ -26,7 +26,7 @@ class _CommandScreenState extends State<CommandScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Thermal Printer USB'),
+        title: const Text('Printer USB'),
       ),
       body: BlocProvider(
         create: (_) => CommandBloc(),
@@ -92,14 +92,14 @@ class _CommandScreenState extends State<CommandScreen> {
                           scrollDirection: Axis.vertical,
                           child: Container(
                             width: 450,
-                            constraints: BoxConstraints(
+                            constraints: const BoxConstraints(
                               maxHeight: 200,
                             ),
                             child: TextField(
                               controller: _commandController,
                               decoration: InputDecoration(
                                 labelText: 'Enter Command',
-                                border: OutlineInputBorder(),
+                                border: const OutlineInputBorder(),
                                 errorText: !_isCommandValid &&
                                         _commandController.text.isNotEmpty
                                     ? 'Invalid Command'
@@ -144,7 +144,7 @@ class _CommandScreenState extends State<CommandScreen> {
                             : null,
                         child: const Text('Print Text'),
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       ElevatedButton(
                         onPressed: _isCommandValid
                             ? () {
@@ -153,7 +153,7 @@ class _CommandScreenState extends State<CommandScreen> {
                                     _isAsciiMode ? '--ascii' : '--hex';
 
                                 context.read<CommandBloc>().add(
-                                      ExecuteCommand('$command', argument),
+                                      ExecuteCommand(command, argument),
                                     );
                                 context.read<CommandBloc>().add(
                                       ExecuteCommand('1b77', '-x'),
@@ -162,7 +162,7 @@ class _CommandScreenState extends State<CommandScreen> {
                             : null,
                         child: const Text('Print & Cut'),
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       ElevatedButton(
                         onPressed:(){
                                 String command = '1b77';
@@ -174,7 +174,7 @@ class _CommandScreenState extends State<CommandScreen> {
                             
                         child: const Text('Cut'),
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
