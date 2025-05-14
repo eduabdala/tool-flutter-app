@@ -69,16 +69,21 @@ Abaixo estão algumas imagens demonstrando o funcionamento do aplicativo:
 <p align="center">
   <img src="assets/screenshots/Screenshot-menu-dark.png" alt="Tela inicial do app" width="600"/>
 </p>
+<p>imagem 1: Tela inicial do app.</p>
 
 <p align="center">
   <img src="assets/screenshots/Screenshot-data-chart.png" alt="Outra funcionalidade do app" width="600"/>
 </p>
+<p>imagem 2: Tela de comunicação serial.</p>
 
 <p align="center">
   <img src="assets/screenshots/Screenshot-key-derivation.png" alt="Outra funcionalidade do app" width="600"/>
 </p>
+<p>imagem 3: Tela de derivação de chave.</p>
+
 
 <p align="center">
   <img src="assets/screenshots/Screenshot-menu-light.png" alt="Tela inicial do app claro" width="600"/>
 </p>
+<p>imagem 4: Tela mostrando modo claro do app e sistema de abas.</p>
 
