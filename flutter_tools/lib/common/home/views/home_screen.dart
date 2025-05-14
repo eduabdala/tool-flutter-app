@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tools/modules/chart_data/views/chart_view_test.dart';
+import 'package:flutter_tools/modules/chart_data/views/chart_data_view.dart';
 import 'package:flutter_tools/modules/printer_commands/views/printer_commands_screen.dart';
 import '../../../modules/key_derivation/views/key_derivation_screen.dart';
 
@@ -15,8 +14,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final Map<String, WidgetBuilder> buttonToScreenMap = {
     'Key Derivation': (context) => const KeyDerivationScreen(),
-    'Antiskimming': (context) => SuChartApp(),
-    'Thermal Printer': (context) => const CommandScreen(),
+    'Chart Data': (context) => SuChartApp(),
+    'USB Printer': (context) => const CommandScreen(),
   };
 
   List<List<String>> _splitButtonsIntoGroups(

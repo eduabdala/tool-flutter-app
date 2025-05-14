@@ -7,7 +7,7 @@ AntiskimmingChartData parseAntiskimmingData(String data) {
   List<dynamic> tokens = data.split(';').where((e) => e.isNotEmpty).toList();
 
   if (tokens.length < 2) {
-    throw FormatException("Linha de dados incompleta!");
+    throw const FormatException("Linha de dados incompleta!");
   }
 
   AntiskimmingChartData result = AntiskimmingChartData(

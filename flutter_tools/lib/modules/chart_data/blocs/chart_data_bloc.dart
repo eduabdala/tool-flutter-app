@@ -49,7 +49,7 @@ class ChartDataBloc extends Bloc<ChartDataEvent, ChartDataState> {
     on<GetDeviceConfigEvent>((event, emit) async {
       try {
         String? response =
-            await _serialHandler.sendDataPertoDireto(event.command);
+            await _serialHandler.sendDataProtocol(event.command);
         if (response != null) {
           emit(ChartDataReceivedState(response));
         } else {

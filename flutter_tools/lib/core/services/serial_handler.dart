@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'perto_direto_protocol.dart';
+import 'serial_protocol.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 
 class SerialHandler {
@@ -35,7 +35,7 @@ class SerialHandler {
   Future<String?> sendData(String command) async {
     if (ser != null && ser!.isOpen) {
       ser!.write(Uint8List.fromList(utf8.encode(command)));
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
       final response = ser!.read(ser!.bytesAvailable);
       ser!.flush();
       return utf8.decode(response);
@@ -43,13 +43,13 @@ class SerialHandler {
     return null;
   }
 
-  Future<String?> sendDataPertoDireto(String command) async {
+  Future<String?> sendDataProtocol(String command) async {
     if (ser != null && ser!.isOpen) {
       final frame = ProtocolHandler.buildFrame(command);
 
       ser!.write(frame);
 
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
 
       List<int> responseBytes = [];
       while (ser!.bytesAvailable > 0) {
