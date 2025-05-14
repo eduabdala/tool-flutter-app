@@ -76,7 +76,7 @@ class CustomChart extends StatelessWidget {
         axisLabelFormatter: (AxisLabelRenderDetails args) {
           num numericValue = args.value;
           String formattedValue = '${(numericValue % 60).toStringAsFixed(1)} s';
-          return ChartAxisLabel(formattedValue, TextStyle());
+          return ChartAxisLabel(formattedValue, const TextStyle());
         },
       ),
       primaryYAxis: NumericAxis(
@@ -91,7 +91,7 @@ class CustomChart extends StatelessWidget {
             xValueMapper: (ChartData data, _) => data.timestamp,
             yValueMapper: (ChartData data, _) => data.value,
             name: chartDataName[i],
-            markerSettings: MarkerSettings(isVisible: true),
+            markerSettings: const MarkerSettings(isVisible: true),
           ),
       ],
       zoomPanBehavior: ZoomPanBehavior(

@@ -119,14 +119,14 @@ class _KeyDerivationScreenState extends State<KeyDerivationScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
                     child: Column(
                       children: [
-                        Container(
+                        SizedBox(
                           width: 300,
                           height: 60,
                           child: TextField(
                             controller: _controller1,
                             decoration: InputDecoration(
                               labelText: 'Hardware ID',
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                               errorText: !_isHardwareIdValid &&
                                       _controller1.text.isNotEmpty
                                   ? 'Invalid Format'
@@ -156,14 +156,14 @@ class _KeyDerivationScreenState extends State<KeyDerivationScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
                     child: Column(
                       children: [
-                        Container(
+                        SizedBox(
                           width: 300,
                           height: 60,
                           child: TextField(
                             controller: _controller2,
                             decoration: InputDecoration(
                               labelText: 'Original Key',
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                               errorText: !_isOriginalKeyValid &&
                                       _controller2.text.isNotEmpty
                                   ? 'Invalid Format'
