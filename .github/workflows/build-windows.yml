@@ -11,28 +11,27 @@ jobs:
     name: Setup Environment
     runs-on: windows-latest
 
-    outputs:
-      flutter-version: '3.22.1'
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Cache Flutter Pub packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pub-cache
+            flutter_tools/.dart_tool
+          key: ${{ runner.os }}-pub-${{ hashFiles('flutter_tools/pubspec.yaml') }}
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ job.outputs.flutter-version }}
+          flutter-version: '3.22.1'
           channel: stable
 
       - name: Install dependencies
         run: flutter pub get
         working-directory: flutter_tools
-
-      - name: Upload pub cache
-        uses: actions/upload-artifact@v4
-        with:
-          name: pub-cache
-          path: ~/.pub-cache
 
   build:
     name: Build Windows Application
@@ -43,15 +42,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download pub cache
-        uses: actions/download-artifact@v4
+      - name: Cache Flutter Pub packages
+        uses: actions/cache@v3
         with:
-          name: pub-cache
+          path: |
+            ~/.pub-cache
+            flutter_tools/.dart_tool
+          key: ${{ runner.os }}-pub-${{ hashFiles('flutter_tools/pubspec.yaml') }}
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ needs.setup.outputs.flutter-version }}
+          flutter-version: '3.22.1'
           channel: stable
 
       - name: Build Windows App
