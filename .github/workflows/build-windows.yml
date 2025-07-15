@@ -1,50 +1,112 @@
-name: Build Flutter Windows
+name: Build Flutter App for Windows
 
 on:
   push:
-    branches:
-      - feature/02
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-  build:
+  # 🛠️ Job 1 - Setup: Checkout + Flutter install + pub get
+  setup:
+    name: Setup Environment
     runs-on: windows-latest
 
-    steps:
-      - uses: actions/checkout@v3
+    outputs:
+      flutter-path: ${{ steps.flutter.outputs.flutter-path }}
 
-      - name: Setup Flutter
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        id: flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.13.9'
-
-      - name: Check Flutter and Dart versions
-        shell: pwsh
-        run: |
-          flutter --version
-          dart --version
-        working-directory: flutter_tools
+          flutter-version: '3.22.1'
+          channel: stable
 
       - name: Install dependencies
-        shell: pwsh
         run: flutter pub get
-        working-directory: flutter_tools
 
-      - name: Enable Windows platform
-        shell: pwsh
-        run: flutter config --enable-windows-desktop
-        working-directory: flutter_tools
+  # 🔍 Job 2 - Analyze
+  analyze:
+    name: Analyze Code
+    runs-on: windows-latest
+    needs: setup
 
-      - name: Build Windows App
-        shell: pwsh
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.1'
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze project
+        run: flutter analyze
+
+  # 🧪 Job 3 - Test
+  test:
+    name: Run Tests
+    runs-on: windows-latest
+    needs: setup
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.1'
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests
+        run: flutter test
+
+  # 🧱 Job 4 - Build Windows
+  build:
+    name: Build for Windows
+    runs-on: windows-latest
+    needs: [analyze, test]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.1'
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Windows
         run: flutter build windows
-        working-directory: flutter_tools
 
-      - name: Archive build output
-        shell: pwsh
-        run: Compress-Archive -Path flutter_tools/build/windows/runner/Release/* -DestinationPath windows_build.zip
+  # 📦 Job 5 - Upload Artifact
+  upload:
+    name: Upload Build Artifacts
+    runs-on: windows-latest
+    needs: build
 
-      - name: Upload artifact
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Upload Windows Build
         uses: actions/upload-artifact@v4
         with:
-          name: windows-build
-          path: windows_build.zip
+          name: Windows Build
+          path: build/windows/runner/Release/
