@@ -18,6 +18,12 @@ jobs:
         with:
           flutter-version: '3.19.0'
 
+      - name: create windows
+        run: flutter create --platforms=windows flutter_tools
+
+      - name: folder
+        run: cd flutter_tools
+
       - name: Install dependencies
         run: flutter pub get
 
