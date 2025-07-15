@@ -26,17 +26,20 @@ jobs:
 
       - name: Install dependencies
         shell: pwsh
-        run: & "$env:USERPROFILE\flutter\bin\flutter.bat" pub get
+        run: |
+          & "$env:USERPROFILE\flutter\bin\flutter.bat" pub get
         working-directory: flutter_tools
 
       - name: Enable Windows platform
         shell: pwsh
-        run: & "$env:USERPROFILE\flutter\bin\flutter.bat" config --enable-windows-desktop
+        run: |
+          & "$env:USERPROFILE\flutter\bin\flutter.bat" config --enable-windows-desktop
         working-directory: flutter_tools
 
       - name: Build Windows App
         shell: pwsh
-        run: & "$env:USERPROFILE\flutter\bin\flutter.bat" build windows
+        run: |
+          & "$env:USERPROFILE\flutter\bin\flutter.bat" build windows
         working-directory: flutter_tools
 
       - name: Archive build output
