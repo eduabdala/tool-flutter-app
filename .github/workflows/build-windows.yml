@@ -30,35 +30,10 @@ jobs:
         run: flutter pub get
         working-directory: flutter_tools
 
-  # 🔍 Job 2 - Analyze
-#  analyze:
-#    name: Analyze Code
-#    runs-on: windows-latest
-#    needs: setup
-#
-#    steps:
-#      - name: Checkout repository
-#        uses: actions/checkout@v4
-#
-#      - name: Set up Flutter
-#        uses: subosito/flutter-action@v2
-#        with:
-#          flutter-version: '3.22.1'
-#          channel: stable
-#
-#      - name: Install dependencies
-#        run: flutter pub get
-#        working-directory: flutter_tools
-#
-#      - name: Analyze project
-#        run: flutter analyze --no-fatal-infos --no-fatal-warnings
-#        working-directory: flutter_tools
-
-  # 🧱 Job 3 - Build Windows
+  # 🧱 Job 2 - Build Windows
   build:
     name: Build for Windows
     runs-on: windows-latest
-#    needs: analyze
 
     steps:
       - name: Checkout repository
@@ -78,7 +53,7 @@ jobs:
         run: flutter build windows
         working-directory: flutter_tools
 
-  # 📦 Job 4 - Upload Artifact
+  # 📦 Job 3 - Upload Artifact
   upload:
     name: Upload Build Artifacts
     runs-on: windows-latest
@@ -92,4 +67,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Windows Build
-          path: flutter_tools/build/windows/runner/Release/
+          path: flutter_tools/build/windows/x64/runner/Release/
