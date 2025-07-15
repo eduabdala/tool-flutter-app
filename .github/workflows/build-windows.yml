@@ -7,30 +7,7 @@ on:
     branches: [feature/02]
 
 jobs:
-  # 🛠️ Job 1 - Setup: Checkout + Flutter install + pub get
-  setup:
-    name: Setup Environment
-    runs-on: windows-latest
-
-    outputs:
-      flutter-path: ${{ steps.flutter.outputs.flutter-path }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Flutter
-        id: flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.22.1'
-          channel: stable
-
-      - name: Install dependencies
-        run: flutter pub get
-        working-directory: flutter_tools
-
-  # 🧱 Job 2 - Build Windows
+  # 🧱 Job 1 - Build Windows e salva artefato
   build:
     name: Build for Windows
     runs-on: windows-latest
@@ -53,18 +30,23 @@ jobs:
         run: flutter build windows
         working-directory: flutter_tools
 
-  # 📦 Job 3 - Upload Artifact
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: flutter_tools/build/windows/x64/runner/Release/
+
+  # 📦 Job 2 - Download e publica artefato (opcional, se quiser separar)
   upload:
     name: Upload Build Artifacts
     runs-on: windows-latest
     needs: build
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Upload Windows Build
-        uses: actions/upload-artifact@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v4
         with:
-          name: Windows Build
-          path: flutter_tools/build/windows/x64/runner/Release/
+          name: windows-build
+
+      - name: List downloaded files (debug)
+        run: dir
