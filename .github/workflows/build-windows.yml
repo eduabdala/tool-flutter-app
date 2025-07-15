@@ -13,32 +13,36 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Install Flutter manually (v3.13.9)
-        run: |
-          Invoke-WebRequest -Uri https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.13.9-stable.zip -OutFile flutter.zip
-          Expand-Archive -Path flutter.zip -DestinationPath $env:USERPROFILE
-          echo "$env:USERPROFILE\flutter\bin" | Out-File -Append -Encoding ascii $env:GITHUB_PATH
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.13.9'
 
       - name: Check Flutter and Dart version
         run: |
           flutter --version
           dart --version
+        shell: pwsh
         working-directory: flutter_tools
 
       - name: Install dependencies
         run: flutter pub get
+        shell: pwsh
         working-directory: flutter_tools
 
       - name: Enable Windows platform
         run: flutter config --enable-windows-desktop
+        shell: pwsh
         working-directory: flutter_tools
 
       - name: Build Windows App
         run: flutter build windows
+        shell: pwsh
         working-directory: flutter_tools
 
       - name: Archive build output
         run: Compress-Archive -Path flutter_tools/build/windows/runner/Release/* -DestinationPath windows_build.zip
+        shell: pwsh
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
