@@ -2,7 +2,8 @@ name: Build Flutter Windows
 
 on:
   push:
-    branches: [ feature/02 ]
+    branches:
+      - feature/02
 
 jobs:
   build:
@@ -10,40 +11,52 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      # Passo 1: Baixar o código fonte
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.13.9'
+      # Passo 2: Instalar Flutter manualmente (versão 3.13.9)
+      # Baixa o zip, descompacta no diretório do usuário e adiciona o Flutter no PATH do runner
+      - name: Install Flutter manually (v3.13.9)
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.13.9-stable.zip -OutFile flutter.zip
+          Expand-Archive -Path flutter.zip -DestinationPath $env:USERPROFILE
+          # Adiciona flutter/bin ao PATH para os próximos passos
+          Add-Content -Path $env:GITHUB_PATH -Value "$env:USERPROFILE\flutter\bin"
 
-      - name: Check Flutter and Dart version
+      # Passo 3: Conferir versões do Flutter e Dart para garantir que está usando o correto
+      - name: Check Flutter and Dart versions
+        shell: pwsh
         run: |
           flutter --version
           dart --version
-        shell: pwsh
         working-directory: flutter_tools
 
+      # Passo 4: Instalar dependências do Flutter (flutter pub get)
       - name: Install dependencies
+        shell: pwsh
         run: flutter pub get
-        shell: pwsh
         working-directory: flutter_tools
 
+      # Passo 5: Habilitar suporte a Windows desktop no Flutter
       - name: Enable Windows platform
+        shell: pwsh
         run: flutter config --enable-windows-desktop
-        shell: pwsh
         working-directory: flutter_tools
 
+      # Passo 6: Build do app para Windows
       - name: Build Windows App
-        run: flutter build windows
         shell: pwsh
+        run: flutter build windows
         working-directory: flutter_tools
 
+      # Passo 7: Compactar a saída do build para facilitar upload
       - name: Archive build output
-        run: Compress-Archive -Path flutter_tools/build/windows/runner/Release/* -DestinationPath windows_build.zip
         shell: pwsh
+        run: Compress-Archive -Path flutter_tools/build/windows/runner/Release/* -DestinationPath windows_build.zip
 
+      # Passo 8: Fazer upload do artefato gerado
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
