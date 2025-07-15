@@ -1,6 +1,5 @@
 /.vscode/
 /build/
-flutter_tools/windows/
 flutter_tools/linux/
 flutter_tools/README.md
 /linux/

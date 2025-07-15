@@ -6,34 +6,41 @@ on:
 
 jobs:
   build:
-    name: Build Flutter App for Windows
+    name: Build Windows App
     runs-on: windows-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout source code
         uses: actions/checkout@v3
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.13.9'
+          channel: 'stable'
 
-      - name: create windows
-        run: flutter create --platforms=windows flutter_tools
-
-      - name: folder
-        run: cd flutter_tools
+      - name: Check Flutter and Dart versions
+        run: |
+          flutter --version
+          dart --version
+        working-directory: flutter_tools
 
       - name: Install dependencies
         run: flutter pub get
+        working-directory: flutter_tools
+
+      - name: Enable Windows platform
+        run: flutter config --enable-windows-desktop
+        working-directory: flutter_tools
 
       - name: Build Windows App
         run: flutter build windows
+        working-directory: flutter_tools
 
-      - name: Compress Build Output
-        run: Compress-Archive -Path build/windows/runner/Release/* -DestinationPath windows_build.zip
+      - name: Archive build output
+        run: Compress-Archive -Path flutter_tools/build/windows/runner/Release/* -DestinationPath windows_build.zip
 
-      - name: Upload Artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-build
