@@ -12,34 +12,31 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install Flutter manually (v3.13.9)
-        shell: pwsh
-        run: |
-          Invoke-WebRequest -Uri https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.13.9-stable.zip -OutFile flutter.zip
-          Expand-Archive -Path flutter.zip -DestinationPath $env:USERPROFILE
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.13.9'
 
       - name: Check Flutter and Dart versions
         shell: pwsh
         run: |
-          & "$env:USERPROFILE\flutter\bin\flutter.bat" --version
-          & "$env:USERPROFILE\flutter\bin\dart.bat" --version
+          flutter --version
+          dart --version
+        working-directory: flutter_tools
 
       - name: Install dependencies
         shell: pwsh
-        run: |
-          & "$env:USERPROFILE\flutter\bin\flutter.bat" pub get
+        run: flutter pub get
         working-directory: flutter_tools
 
       - name: Enable Windows platform
         shell: pwsh
-        run: |
-          & "$env:USERPROFILE\flutter\bin\flutter.bat" config --enable-windows-desktop
+        run: flutter config --enable-windows-desktop
         working-directory: flutter_tools
 
       - name: Build Windows App
         shell: pwsh
-        run: |
-          & "$env:USERPROFILE\flutter\bin\flutter.bat" build windows
+        run: flutter build windows
         working-directory: flutter_tools
 
       - name: Archive build output
