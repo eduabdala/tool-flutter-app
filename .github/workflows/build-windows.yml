@@ -7,10 +7,12 @@ on:
     branches: [feature/02]
 
 jobs:
-  # 🧱 Job 1 - Build Windows e salva artefato
-  build:
-    name: Build for Windows
+  setup:
+    name: Setup Environment
     runs-on: windows-latest
+
+    outputs:
+      flutter-version: '3.22.1'
 
     steps:
       - name: Checkout repository
@@ -19,34 +21,59 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.1'
+          flutter-version: ${{ job.outputs.flutter-version }}
           channel: stable
 
       - name: Install dependencies
         run: flutter pub get
         working-directory: flutter_tools
 
-      - name: Build Windows
+      - name: Upload pub cache
+        uses: actions/upload-artifact@v4
+        with:
+          name: pub-cache
+          path: ~/.pub-cache
+
+  build:
+    name: Build Windows Application
+    runs-on: windows-latest
+    needs: setup
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download pub cache
+        uses: actions/download-artifact@v4
+        with:
+          name: pub-cache
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.setup.outputs.flutter-version }}
+          channel: stable
+
+      - name: Build Windows App
         run: flutter build windows
         working-directory: flutter_tools
 
-      - name: Upload build artifact
+      - name: Upload Windows build artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-build
           path: flutter_tools/build/windows/x64/runner/Release/
 
-  # 📦 Job 2 - Download e publica artefato (opcional, se quiser separar)
   upload:
-    name: Upload Build Artifacts
+    name: Download and Verify Artifacts
     runs-on: windows-latest
     needs: build
 
     steps:
-      - name: Download artifact
+      - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
           name: windows-build
 
-      - name: List downloaded files (debug)
+      - name: List downloaded files
         run: dir
