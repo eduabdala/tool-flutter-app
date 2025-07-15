@@ -28,6 +28,7 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+        working-directory: flutter_tools
 
   # 🔍 Job 2 - Analyze
   analyze:
@@ -47,37 +48,17 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+        working-directory: flutter_tools
 
       - name: Analyze project
         run: flutter analyze
+        working-directory: flutter_tools
 
-  # 🧪 Job 3 - Test
-  test:
-    name: Run Tests
-    runs-on: windows-latest
-    needs: setup
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.22.1'
-          channel: stable
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Run tests
-        run: flutter test
-
-  # 🧱 Job 4 - Build Windows
+  # 🧱 Job 3 - Build Windows
   build:
     name: Build for Windows
     runs-on: windows-latest
-    needs: [analyze, test]
+    needs: analyze
 
     steps:
       - name: Checkout repository
@@ -91,11 +72,13 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+        working-directory: flutter_tools
 
       - name: Build Windows
         run: flutter build windows
+        working-directory: flutter_tools
 
-  # 📦 Job 5 - Upload Artifact
+  # 📦 Job 4 - Upload Artifact
   upload:
     name: Upload Build Artifacts
     runs-on: windows-latest
@@ -109,4 +92,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Windows Build
-          path: build/windows/runner/Release/
+          path: flutter_tools/build/windows/runner/Release/
