@@ -2,9 +2,9 @@ name: Build Flutter App for Windows
 
 on:
   push:
-    branches: [main]
+    branches: [feature/02]
   pull_request:
-    branches: [main]
+    branches: [feature/02]
 
 jobs:
   # 🛠️ Job 1 - Setup: Checkout + Flutter install + pub get
