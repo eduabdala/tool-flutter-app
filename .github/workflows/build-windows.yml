@@ -1,0 +1,34 @@
+name: Build Flutter Windows
+
+on:
+  push:
+    branches: [ feature/02 ]
+
+jobs:
+  build:
+    name: Build Flutter App for Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Windows App
+        run: flutter build windows
+
+      - name: Compress Build Output
+        run: Compress-Archive -Path build/windows/runner/Release/* -DestinationPath windows_build.zip
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: windows_build.zip
