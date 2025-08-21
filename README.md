@@ -1,89 +1,111 @@
+# Flutter Environment Setup
 
-## Configuração do Ambiente
+<!-- Badges -->
 
-### Configuração do Ambiente Flutter
+![Project Status](https://img.shields.io/badge/status-in%20development-yellow)
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Build](https://img.shields.io/badge/build-unavailable-red)
 
-01. **Configuração do Ambiente Flutter**
+---
 
-    1.1 **Requisitos**
-    
-    - Certifique-se de que o SDK Flutter esteja instalado e configurado corretamente.
-    - Siga as instruções em [Documentação do Flutter](https://docs.flutter.dev/get-started/install/windows/desktop).
+## Description
 
-    1.2 **Dependências do Flutter**
-    - Execute o seguinte comando no seu terminal para obter as dependências:
-    
-    ```bash
-    flutter pub get
-    ```
+This document explains how to set up the Flutter environment and build the Flutter application for Windows.
 
-02. **Gerando os arquivos para build**
+---
 
-    Agora, você irá criar o projeto e gerar os arquivos necessários para a construção do aplicativo.
+## Table of Contents
 
-    2.1 **Gerando o projeto Flutter com suporte à plataforma Windows:**
+* [Flutter Environment Setup](#flutter-environment-setup)
+* [Building the Application](#building-the-application)
+* [Screenshots](#screenshots)
 
-    ```bash
-    flutter create --platforms=windows flutter_tools
-    ```
+---
 
-    - Esse comando cria um projeto Flutter chamado flutter_tools com suporte para a plataforma Windows.
+## Flutter Environment Setup
 
-    2.2 **Navegando até o diretório do projeto:**
+### Requirements
 
-    ```bash
-    cd flutter_tools
-    ```
+* Ensure the Flutter SDK is installed and properly configured.
+* Follow the instructions in the [Flutter Documentation](https://docs.flutter.dev/get-started/install/windows/desktop).
 
-    2.3 **Verificando se o ambiente está configurado corretamente (garante que o Flutter está pronto para desenvolvimento para Windows):**
+### Flutter Dependencies
 
-    ```bash
-    flutter doctor
-    ```
+Run the following command to fetch dependencies:
 
-    Isso deve confirmar que todas as ferramentas necessárias estão prontas para uso.
+```bash
+flutter pub get
+```
 
-    2.4 **Rodando o aplicativo na plataforma Windows:**
+---
 
-    Para executar o app localmente no seu PC com Windows, utilize o comando:
+## Building the Application
 
-    ```bash
-    flutter run -d windows
-    ```
+### Creating the Flutter Project with Windows Support
 
-    O -d windows garante que o aplicativo será executado em um ambiente de desktop Windows.
+```bash
+flutter create --platforms=windows flutter_tools
+```
 
-    2.5 **Gerando o build para Windows:**
+This command creates a Flutter project named `flutter_tools` with Windows support.
 
-    Quando estiver pronto para gerar a versão compilada do seu aplicativo, use:
+### Navigating to the Project Directory
 
-    ```bash
-    flutter build windows
-    ```
-    Esse comando cria os arquivos necessários para distribuição do aplicativo no Windows.
+```bash
+cd flutter_tools
+```
 
-## Capturas de Tela
+### Verifying the Environment
 
-Abaixo estão algumas imagens demonstrando o funcionamento do aplicativo:
+```bash
+flutter doctor
+```
+
+This ensures all necessary tools are ready for Windows development.
+
+### Running the Application on Windows
+
+```bash
+flutter run -d windows
+```
+
+The `-d windows` flag ensures the app runs in a Windows desktop environment.
+
+### Building for Windows
+
+```bash
+flutter build windows
+```
+
+This generates the build files for distributing the application on Windows.
+
+---
+
+## Screenshots
 
 <p align="center">
-  <img src="assets/screenshots/Screenshot-menu-dark.png" alt="Tela inicial do app" width="600"/>
+  <img src="assets/screenshots/Screenshot-menu-dark.png" alt="App main screen" width="600"/>
 </p>
-<p>imagem 1: Tela inicial do app.</p>
+<p>Image 1: Main screen of the app.</p>
 
 <p align="center">
-  <img src="assets/screenshots/Screenshot-data-chart.png" alt="Outra funcionalidade do app" width="600"/>
+  <img src="assets/screenshots/Screenshot-data-chart.png" alt="Serial communication screen" width="600"/>
 </p>
-<p>imagem 2: Tela de comunicação serial.</p>
+<p>Image 2: Serial communication screen.</p>
 
 <p align="center">
-  <img src="assets/screenshots/Screenshot-key-derivation.png" alt="Outra funcionalidade do app" width="600"/>
+  <img src="assets/screenshots/Screenshot-key-derivation.png" alt="Key derivation screen" width="600"/>
 </p>
-<p>imagem 3: Tela de derivação de chave.</p>
-
+<p>Image 3: Key derivation screen.</p>
 
 <p align="center">
-  <img src="assets/screenshots/Screenshot-menu-light.png" alt="Tela inicial do app claro" width="600"/>
+  <img src="assets/screenshots/Screenshot-menu-light.png" alt="App main screen in light mode" width="600"/>
 </p>
-<p>imagem 4: Tela mostrando modo claro do app e sistema de abas.</p>
+<p>Image 4: Main screen in light mode with tab system.</p>
 
+---
+
+<!-- Personal Notes -->
+
+> Keep the README updated with badges, version, and project status.
