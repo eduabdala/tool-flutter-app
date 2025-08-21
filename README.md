@@ -2,10 +2,12 @@
 
 <!-- Badges -->
 
-![Project Status](https://img.shields.io/badge/status-in%20development-yellow)
+![Project Status](https://img.shields.io/badge/status-stopped-red)
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Build](https://img.shields.io/badge/build-unavailable-red)
+![Issues](https://img.shields.io/github/issues/eduabdala/tool-flutter-app)
+![Python](https://img.shields.io/badge/dart-3.3.4-blue) ![Flutter](https://img.shields.io/badge/flutter-3.13-blue)
 
 ---
 
@@ -109,3 +111,4 @@ This generates the build files for distributing the application on Windows.
 <!-- Personal Notes -->
 
 > Keep the README updated with badges, version, and project status.
+
