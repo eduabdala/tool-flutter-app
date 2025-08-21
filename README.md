@@ -113,3 +113,4 @@ This generates the build files for distributing the application on Windows.
 > Keep the README updated with badges, version, and project status.
 
 
+
